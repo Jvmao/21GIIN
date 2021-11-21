@@ -103,31 +103,31 @@ public class Login extends JFrame {
 		passField.setBackground(new Color(224, 255, 255));
 		passField.setBounds(106, 141, 192, 26);
 		contentPane.add(passField);
-		passField.addKeyListener(new innerKLogin());
+		passField.addKeyListener(new InnerKey());
 		
 		//Botón Reset
 		btnReset = new JButton("Reset");
 		btnReset.setBounds(6, 237, 117, 29);
 		contentPane.add(btnReset);
-		btnReset.addActionListener(new innerLogin());
+		btnReset.addActionListener(new InnerAction());
 		
 		//Botón Inicio
 		btnStart = new JButton("Inicio");
 		btnStart.setBounds(166, 237, 120, 29);
 		contentPane.add(btnStart);
-		btnStart.addActionListener(new innerLogin());
+		btnStart.addActionListener(new InnerAction());
 		
 		//Botón Salir
 		btnSalir = new JButton("Salir");
 		btnSalir.setBounds(324, 237, 120, 29);
 		contentPane.add(btnSalir);
-		btnSalir.addActionListener(new innerLogin());//Agregamos el ActionListener desde la innerClass//
+		btnSalir.addActionListener(new InnerAction());//Agregamos el ActionListener desde la innerClass//
 		
 	}
 	
 	
 	//Definimos los actionListener de los componentes desde la inner class
-	public class innerLogin implements ActionListener{
+	public class InnerAction implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -154,7 +154,7 @@ public class Login extends JFrame {
 	}
 	
 	//Innerclass para los eventos de teclado
-	public class innerKLogin implements KeyListener{
+	public class InnerKey implements KeyListener{
 
 		@Override
 		public void keyTyped(KeyEvent e) {
