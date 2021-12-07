@@ -4,51 +4,69 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controlador.ConDB;
+import controlador.UsuariosImplDAO;
+import modelo.Usuarios;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JPasswordField;
-import java.awt.Color;
+import javax.swing.JTextField;
 
+/**
+ * @JVMARTI
+ */
 public class Login extends JFrame {
 
-
+	//Declaración componentes
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel lbUser,lbIdUser,lbPass;
 	private JButton btnStart,btnReset,btnSalir;
 	private JComboBox<String> cbTipo,cbID;
-	private JPasswordField passField;
-	
-	private ArrayList<String> tiposUsuarios = new ArrayList<String>();
-	private ArrayList<String> numID = new ArrayList<String>();
-	
+	private JTextField txPass;
 
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	//Llamada clase UsuariosImplDAO
+	private UsuariosImplDAO udao = new UsuariosImplDAO();
+	
+	//Instanciamos el objeto Usuarios
+	private Usuarios u = new Usuarios();
+	private MenuPrincipal mn = new MenuPrincipal();
+	//private GestUsuarios gt = new GestUsuarios();
+	
+	public static String TipoUsuario;
+	
+	//Variables Conexión
+	Connection conn;
+	
+	private static String server = "jdbc:sqlserver://localhost:1433;databaseName=proyecto";
+	//private static String server = "jdbc:sqlserver://127.0.0.1:1433;databaseName=proyecto";
+	private static String user = "sa";
+	//private static String user = "sqlserver";
+	private static String pass = "sqlServer145+";
+	//private static String pass = "-a123456";
+	
 
 	/**
 	 * Create the frame.
 	 */
 	public Login() {
+		initComponents();
+	}
+	
+	
+	public void initComponents() {
 		setTitle("LOGIN");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -64,15 +82,6 @@ public class Login extends JFrame {
 		
 		//ComboBox Tipos Usuarios
 		cbTipo = new JComboBox<String>();
-		
-		tiposUsuarios.add("Administrador");
-		tiposUsuarios.add("Cuentadante");
-		tiposUsuarios.add("Fiscal");
-		tiposUsuarios.add("Fiscal General");
-		
-		for (int i = 0; i < tiposUsuarios.size(); i++)
-				    cbTipo.addItem(tiposUsuarios.get(i));
-		
 		cbTipo.setBounds(106, 30, 192, 27);
 		contentPane.add(cbTipo);
 		
@@ -83,13 +92,6 @@ public class Login extends JFrame {
 		
 		//ComboBox ID Usuario
 		cbID = new JComboBox<String>();
-		numID.add("1001");
-		numID.add("1002");
-		numID.add("1003");
-		
-		for (int i = 0; i < numID.size(); i++)
-			cbID.addItem(numID.get(i));
-		
 		cbID.setBounds(106, 89, 192, 27);
 		contentPane.add(cbID);
 		
@@ -98,12 +100,12 @@ public class Login extends JFrame {
 		lbPass.setBounds(6, 146, 61, 16);
 		contentPane.add(lbPass);
 		
-		//JPassword Password Usuario
-		passField = new JPasswordField();
-		passField.setBackground(new Color(224, 255, 255));
-		passField.setBounds(106, 141, 192, 26);
-		contentPane.add(passField);
-		passField.addKeyListener(new InnerKey());
+		//Campo Password Usuario
+		txPass = new JTextField();
+		txPass.setBounds(106, 141, 192, 26);
+		contentPane.add(txPass);
+		txPass.setColumns(10);
+		txPass.addKeyListener(new InnerKey());
 		
 		//Botón Reset
 		btnReset = new JButton("Reset");
@@ -123,6 +125,10 @@ public class Login extends JFrame {
 		contentPane.add(btnSalir);
 		btnSalir.addActionListener(new InnerAction());//Agregamos el ActionListener desde la innerClass//
 		
+
+		ConDB.getConnection(); //Comprobamos Conexión BBDD
+		udao.listaTipoUsuarios(cbTipo); //Llamamos al método para listar el tipo usuario en comboBox
+		udao.listaIdUsuarios(cbID); //Llamamos al método para listar el tipo usuario en comboBox	
 	}
 	
 	
@@ -132,19 +138,66 @@ public class Login extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
+			//ActionListener Botón Reset
 			if(e.getSource() == btnReset) {
 				//Reiniciamos componentes
 				cbTipo.setSelectedIndex(0); 
 				cbID.setSelectedIndex(0);
-				passField.setText(""); 
+				txPass.setText("");
 			}
 			
+			//ActionListener Botón Inicio
 			if(e.getSource() == btnStart) {
-				 dispose(); //Cerramos ventana Login
-			     new MenuPrincipal().setVisible(true); //Abrimos ventana MenuPrincipal
+				
+				if (txPass.getText().length() < 3) {
+					JOptionPane.showMessageDialog(null,"Longitud Contraseña Incorrecta. Vuelva a introducir los valores","Login", JOptionPane.WARNING_MESSAGE); 
+					restart(); //Reiniciamos campos
+					
+				}else {
+					try {
+						//Establecemos conexión con BBDD
+						conn = DriverManager.getConnection(server, user, pass);
+						Statement st = conn.createStatement();
+						
+						//Definimos la consulta para comprobar que las creedenciales introducidas
+						//existen en la BBDD
+						String query_access = "select * from usuarios where idUsuario = '"+cbID.getSelectedItem().toString()+
+								"' and tipoUsuario = '"+cbTipo.getSelectedItem().toString() +
+								"' and passUsuario = '"+txPass.getText().toString()+"'";
+
+						ResultSet rs = st.executeQuery(query_access);
+						
+						if(rs.next()) {
+							//Guardamos los valores del objeto Usuarios
+						    u.setIdUsuario(cbID.getSelectedItem().toString());
+						    u.setTipoUsuario(cbTipo.getSelectedItem().toString());
+						    u.setPassUsuario(Integer.parseInt(txPass.getText()));
+						    System.out.println(u.toString());
+						    
+						    TipoUsuario = cbTipo.getSelectedItem().toString();
+						    System.out.println("Tipo Usuario Login: "+TipoUsuario);
+						    
+						    mn.setVisible(true); //Abrimos ventana MenuPrincipal
+						    dispose(); //Cerramos ventana Login
+						    System.out.println("Datos Correctos");
+						    
+						}else {
+							System.out.println("Datos Incorrectos");
+							JOptionPane.showMessageDialog(null,"Datos Incorrectos. Vuelva a introducirlos.","Login", JOptionPane.WARNING_MESSAGE); 
+							restart(); //Reiniciamos campos
+						}
+						
+
+						
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+					}
+				}
+			
 				
 			}
 
+			//ActionListener Botón Salir
 			if(e.getSource() == btnSalir) {
 				System.exit(0);//Salimos de la Aplicación//
 			}
@@ -158,9 +211,10 @@ public class Login extends JFrame {
 
 		@Override
 		public void keyTyped(KeyEvent e) {
-			if(e.getSource() == passField) {
+			
+			if(e.getSource() == txPass) {
 				//El campo passField solo admite 8 caracteres como máximo
-				if(passField.getPassword().length == 8) e.consume();			
+				if(txPass.getText().length() == 8) e.consume();
 			}
 			
 		}
@@ -176,7 +230,17 @@ public class Login extends JFrame {
 			// TODO Auto-generated method stub
 		}
 		
+	}	
+	
+	//Método para reiniciar los campos seleccionados
+	public void restart() {
+		//Reiniciamos componentes
+		cbTipo.setSelectedIndex(0); 
+		cbID.setSelectedIndex(0);
+		txPass.setText("");
 	}
+	
+	
 }
 
 

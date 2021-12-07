@@ -5,7 +5,9 @@ import java.util.Date;
 
 import controlador.ControlaFechas;
 
-
+/**
+ * @JVMARTI
+ */
 public class Convocatorias implements ControlaFechas{
 	//Atributos
 	private String idConvocatorias;

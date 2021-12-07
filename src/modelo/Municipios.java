@@ -1,5 +1,8 @@
 package modelo;
 
+/**
+ * @JVMARTI
+ */
 public class Municipios{
 	
 	private String idMunicipio;

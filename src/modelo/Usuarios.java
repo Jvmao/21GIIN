@@ -1,6 +1,8 @@
 package modelo;
 
-
+/**
+ * @JVMARTI
+ */
 public class Usuarios {
 	private String idUsuario;
 	private int passUsuario;

@@ -5,7 +5,9 @@ import java.util.Date;
 
 import controlador.ControlaFechas;
 
-
+/**
+ * @JVMARTI
+ */
 public class Presentaciones extends Convocatorias implements ControlaFechas {
 	
 	//Atributos

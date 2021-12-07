@@ -4,6 +4,9 @@ import javax.swing.JFrame;
 
 import vista.Login;
 
+/**
+ * @JVMARTI
+ */
 public class Start extends JFrame{
 	private static final long serialVersionUID = 1L;
 
@@ -14,5 +17,4 @@ public class Start extends JFrame{
 		login.setVisible(true);
 
 	}
-
 }
