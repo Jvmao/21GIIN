@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import controlador.ConDB;
 import controlador.UsuariosImplDAO;
 import modelo.Usuarios;
+import util.Constants;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -49,13 +52,6 @@ public class Login extends JFrame {
 	
 	//Variables Conexión
 	Connection conn;
-	
-	private static String server = "jdbc:sqlserver://localhost:1433;databaseName=proyecto";
-	//private static String server = "jdbc:sqlserver://127.0.0.1:1433;databaseName=proyecto";
-	private static String user = "sa";
-	//private static String user = "sqlserver";
-	private static String pass = "sqlServer145+";
-	//private static String pass = "-a123456";
 	
 
 	/**
@@ -156,7 +152,7 @@ public class Login extends JFrame {
 				}else {
 					try {
 						//Establecemos conexión con BBDD
-						conn = DriverManager.getConnection(server, user, pass);
+						conn = DriverManager.getConnection(Constants.server,Constants.user,Constants.pass);
 						Statement st = conn.createStatement();
 						
 						//Definimos la consulta para comprobar que las creedenciales introducidas
@@ -166,12 +162,14 @@ public class Login extends JFrame {
 								"' and passUsuario = '"+txPass.getText().toString()+"'";
 
 						ResultSet rs = st.executeQuery(query_access);
+						List<Object> list = Arrays.asList(cbTipo.getSelectedItem()); 
 						
 						if(rs.next()) {
 							//Guardamos los valores del objeto Usuarios
 						    u.setIdUsuario(cbID.getSelectedItem().toString());
-						    u.setTipoUsuario(cbTipo.getSelectedItem().toString());
-						    u.setPassUsuario(Integer.parseInt(txPass.getText()));
+						    //u.setTipoUsuario(cbTipo.getSelectedItem().toString());
+						    u.setTipoUsuario(list);
+						    u.setPassUsuario(txPass.getText());
 						    System.out.println(u.toString());
 						    
 						    TipoUsuario = cbTipo.getSelectedItem().toString();

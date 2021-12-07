@@ -73,7 +73,7 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	}
 
 	@Override
-	public void addUser(String id,String tipo,int password) {
+	public void addUser(String id,String tipo,String password) {
 		try {
 			conn = DriverManager.getConnection(server, user, pass);
 			
@@ -95,7 +95,7 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	}
 
 	@Override
-	public void updateUser(String idInit,String id,String tipo,int password) {
+	public void updateUser(String idInit,String id,String tipo,String password) {
 		try {
 			conn = DriverManager.getConnection(server, user, pass);
 			
@@ -111,7 +111,7 @@ public class UsuariosImplDAO implements UsuarioDAO{
 				PreparedStatement pst = conn.prepareStatement(update);
 				pst.setString(1, id);
 				pst.setString(2, tipo);
-				pst.setInt(3, password);
+				pst.setString(3, password);
 				pst.executeUpdate();
 				
 				System.out.println("Actualizado Usuario en BBDD con ID: '"+id+"'");

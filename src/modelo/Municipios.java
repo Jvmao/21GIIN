@@ -3,24 +3,22 @@ package modelo;
 /**
  * @JVMARTI
  */
-public class Municipios{
+public class Municipios extends Usuarios{
 	
 	private String idMunicipio;
-	private int catMunicipio;
-	private String usuarioMunicipio;
+	private int categoriaMunicipio;
 	
 	//Constructor vacío
 	public Municipios () {}
 
 	//Constructor
-	public Municipios(String idMunicipio, int catMunicipio, String usuarioMunicipio) {
+	public Municipios(String idMunicipio, int categoriaMunicipio) {
 		super();
 		this.idMunicipio = idMunicipio;
-		this.catMunicipio = catMunicipio;
-		this.usuarioMunicipio = usuarioMunicipio;
+		this.categoriaMunicipio = categoriaMunicipio;
 	}
 
-	//Getter and Setters
+	//Getters and setters
 	public String getIdMunicipio() {
 		return idMunicipio;
 	}
@@ -29,27 +27,18 @@ public class Municipios{
 		this.idMunicipio = idMunicipio;
 	}
 
-	public int getCatMunicipio() {
-		return catMunicipio;
+	public int getCategoriaMunicipio() {
+		return categoriaMunicipio;
 	}
 
-	public void setCatMunicipio(int catMunicipio) {
-		this.catMunicipio = catMunicipio;
+	public void setCategoriaMunicipio(int categoriaMunicipio) {
+		this.categoriaMunicipio = categoriaMunicipio;
 	}
 
-	public String getUsuarioMunicipio() {
-		return usuarioMunicipio;
-	}
-
-	public void setUsuarioMunicipio(String usuarioMunicipio) {
-		this.usuarioMunicipio = usuarioMunicipio;
-	}
-
-	//Método toString()
 	@Override
 	public String toString() {
-		return "Municipios [idMunicipio= " + idMunicipio + ", catMunicipio= " + catMunicipio + ", usuarioMunicipio= "
-				+ usuarioMunicipio + "]";
+		return "Municipios [idMunicipio=" + idMunicipio + ", categoriaMunicipio=" + categoriaMunicipio
+				+ ", getTipoUsuario()=" + getTipoUsuario() + "]";
 	}
 		
 	

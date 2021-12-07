@@ -5,22 +5,21 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import util.Constants;
+
 /**
  * @JVMARTI
  */
 public class ConDB {
 	
 	private static Connection conn = null;
-	private static String server = "jdbc:sqlserver://localhost:1433;databaseName=proyecto";
 	//private static String server = "jdbc:sqlserver://127.0.0.1:1433;databaseName=proyecto";
-	private static String user = "sa";
 	//private static String user = "sqlserver";
-	private static String pass = "sqlServer145+";
 	//private static String pass = "-a123456";
 
 	public static Connection getConnection() {
 		try {
-			conn = DriverManager.getConnection(server,user,pass);
+			conn = DriverManager.getConnection(Constants.server,Constants.user,Constants.pass);
 			
 			if (conn != null) {
 				DatabaseMetaData dm = conn.getMetaData();

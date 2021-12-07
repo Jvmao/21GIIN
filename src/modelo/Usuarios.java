@@ -1,12 +1,16 @@
 package modelo;
 
+import java.util.List;
+
+
+
 /**
  * @JVMARTI
  */
-public class Usuarios {
+public class Usuarios{
 	private String idUsuario;
-	private int passUsuario;
-	private String tipoUsuario;
+	private String passUsuario;
+	private List<Object> tipoUsuario;
 	
 	//Constructor vacío
 	public Usuarios() {
@@ -14,14 +18,14 @@ public class Usuarios {
 	}
 
 	//Constructor
-	public Usuarios(String idUsuario, int passUsuario, String tipoUsuario) {
+	public Usuarios(String idUsuario, String passUsuario, List<Object> tipoUsuario) {
 		super();
 		this.idUsuario = idUsuario;
 		this.passUsuario = passUsuario;
 		this.tipoUsuario = tipoUsuario;
 	}
 
-	//Getter and Setters
+	//Getters and setters
 	public String getIdUsuario() {
 		return idUsuario;
 	}
@@ -30,27 +34,28 @@ public class Usuarios {
 		this.idUsuario = idUsuario;
 	}
 
-	public int getPassUsuario() {
+	public String getPassUsuario() {
 		return passUsuario;
 	}
 
-	public void setPassUsuario(int passUsuario) {
+	public void setPassUsuario(String passUsuario) {
 		this.passUsuario = passUsuario;
 	}
 
-	public String getTipoUsuario() {
+	public List<Object> getTipoUsuario() {
 		return tipoUsuario;
 	}
 
-	public void setTipoUsuario(String tipoUsuario) {
-		this.tipoUsuario = tipoUsuario;
+	public void setTipoUsuario(List<Object> list) {
+		this.tipoUsuario = list;
 	}
 
 	//Método toString()
 	@Override
 	public String toString() {
-		return "Usuarios [idUsuario= " + idUsuario + ", passUsuario= " + passUsuario + ", tipoUsuario= " + tipoUsuario
+		return "Usuarios [idUsuario=" + idUsuario + ", passUsuario=" + passUsuario + ", tipoUsuario=" + tipoUsuario
 				+ "]";
-	}	
+	}
+	
 
 }

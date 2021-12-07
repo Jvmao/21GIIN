@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.UsuariosImplDAO;
+import util.Constants;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -53,11 +54,6 @@ public class GestUsuarios extends JPanel {
 
 	//Variables Conexión
 	private Connection conn;
-	private static String server = "jdbc:sqlserver://localhost:1433;databaseName=proyecto";
-	//private static String server = "jdbc:sqlserver://127.0.0.1:1433;databaseName=proyecto";
-	private static String user = "sa";
-	//private static String user = "sqlserver";
-	private static String pass = "sqlServer145+";
 	private JTextField txID;
 	private JTextField txPass;
 	//private static String pass = "-a123456";
@@ -169,7 +165,7 @@ public class GestUsuarios extends JPanel {
 	private void populateUserData() {
 		try {
 			//Conexión a la BBDD
-			conn = DriverManager.getConnection(server, user, pass);
+			conn = DriverManager.getConnection(Constants.server,Constants.user,Constants.pass);
 			
 			//Consulta a BBDD
 			String query = "SELECT idUsuario,tipoUsuario,passUsuario FROM usuarios order by 1,2";
@@ -184,11 +180,11 @@ public class GestUsuarios extends JPanel {
 		    	//String data[][] = new String[i][3];
 		    	String id = rs.getString("idUsuario");
 		    	String tipo = rs.getString("tipoUsuario");
-		    	int passw = rs.getInt("passUsuario");
+		    	String passw = rs.getString("passUsuario");
 		        
 		        data[i][0] = id;
 		        data[i][1] = tipo;
-		        data[i][2] = String.valueOf(passw);
+		        data[i][2] = passw;
 		        i++;
 		   }
 			      
@@ -225,15 +221,15 @@ public class GestUsuarios extends JPanel {
 			if(e.getSource()==btnAlta) {
 				
 				//Comprobamos que los campos de ID y password no estén vacíos
-				if(txID.getText() == null || txPass.getText() == null) {
+				if(txID.getText().length() != 0 || (txPass.getText().length() != 0)) {
 					//Llamamos al método para añadir usuario a la BBDD desde la clase UsuariosImplDAO
-					udao.addUser(txID.getText(),cbTipo.getSelectedItem().toString() , Integer.parseInt(txPass.getText()));
+					udao.addUser(txID.getText(),cbTipo.getSelectedItem().toString() , txPass.getText());
 					
 					//Rellenamos los nuevos valores en la tabla
 					Object[] file = new Object[3];
-					file[0]=txID.getText();
+					file[0]=txID.getText().toString();
 					file[1]=cbTipo.getSelectedItem().toString();
-					file[2]=Integer.parseInt(txPass.getText());
+					file[2]=txPass.getText().toString();
 					model.addRow(file);
 					
 					//Una vez finalizada la operación de añadir un nuevo usuario, reiniciamos todos los campos
@@ -269,7 +265,7 @@ public class GestUsuarios extends JPanel {
 					if(JOptionPane.OK_OPTION==confirm){
 						//model.fireTableRowsUpdated(rows, rows);
 						jTableUsuarios.setModel(model);
-						udao.updateUser(idInit,id, tipo, Integer.parseInt(pass));
+						udao.updateUser(idInit,id, tipo,pass);
 					}
 				}
 			}

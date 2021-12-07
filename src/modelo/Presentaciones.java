@@ -1,6 +1,5 @@
 package modelo;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import controlador.ControlaFechas;
@@ -8,35 +7,28 @@ import controlador.ControlaFechas;
 /**
  * @JVMARTI
  */
-public class Presentaciones extends Convocatorias implements ControlaFechas {
+public class Presentaciones extends Evento implements ControlaFechas {
 	
 	//Atributos
 	private Date fechaPresentacion;
 	
 	//Constructor Vacío
 	public Presentaciones() {}
-	
-	
-	//Constructor 
-	public Presentaciones(String id_convocatorias, String descPresentacion, Date fechaApertura, Date fechaCierre,
-			Boolean estadoApertura, ArrayList<String> docsConvocatoria) {
-		super(id_convocatorias, descPresentacion, fechaApertura, fechaCierre, estadoApertura, docsConvocatoria);
-		
+
+	//Constructor
+	public Presentaciones(Date fechaPresentacion) {
+		super();
+		this.fechaPresentacion = fechaPresentacion;
 	}
-	
-	
 
 	//Getters and Setters
 	public Date getFechaPresentacion() {
 		return fechaPresentacion;
 	}
 
-
 	public void setFechaPresentacion(Date fechaPresentacion) {
 		this.fechaPresentacion = fechaPresentacion;
 	}
-	
-	
 
 	//Método toString()
 	@Override
@@ -44,7 +36,7 @@ public class Presentaciones extends Convocatorias implements ControlaFechas {
 		return "Presentaciones [fechaPresentacion=" + fechaPresentacion + "]";
 	}
 
-	//Métodos Implementados
+	//Métodos implementados desde interface ControlaFechas
 	@Override
 	public void compruebaFecha(Date convocatoria, Date presentacion) {
 		// TODO Auto-generated method stub
@@ -55,7 +47,10 @@ public class Presentaciones extends Convocatorias implements ControlaFechas {
 	public void fechaToTimestamp(Date fecha) {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
+	
+	
+	
 			
 	
 }
