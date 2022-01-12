@@ -1,19 +1,60 @@
+/*
+ * 11 ene 2022
+ * Jose V. Martí
+ */
 package controlador;
 
 
-import javax.swing.JComboBox;
+import java.util.ArrayList;
 
-import modelo.Usuarios;
+// TODO: Auto-generated Javadoc
 /**
- * @JVMARTI
+ * The Interface UsuarioDAO.
+ */
+/**
+ * The Interface UsuarioDAO.
  */
 public interface UsuarioDAO {
-	public Usuarios getUserId(String id);
-	public void listaTipoUsuarios(JComboBox<String> jc); 
-	public void listaIdUsuarios(JComboBox<String> jc);
+	
+	/**
+	 * Lista tipo usuarios.
+	 *
+	 * @param c the c
+	 * @return the array list
+	 */
+	public ArrayList<?> listaTipoUsuarios(ArrayList<String> c); 
+	
+	/**
+	 * Lista id usuarios.
+	 *
+	 * @param c the c
+	 * @return the array list
+	 */
+	public ArrayList<?> listaIdUsuarios(ArrayList<String> c);
+	
+	/**
+	 * Adds the user.
+	 *
+	 * @param id       the id
+	 * @param tipo     the tipo
+	 * @param password the password
+	 */
 	public void addUser(String id,String tipo,String password);
-	public void updateUser(String idInit,String id,String tipo,String password);
-	//public Usuarios updateUser();
+	
+	/**
+	 * Update user.
+	 *
+	 * @param id       the id
+	 * @param tipo     the tipo
+	 * @param password the password
+	 */
+	public void updateUser(String id,String tipo,String password);
+	
+	/**
+	 * Delete user.
+	 *
+	 * @param id the id
+	 */
 	public void deleteUser(String id);
 
 }
