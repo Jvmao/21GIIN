@@ -1,12 +1,11 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import util.ConstantsDB;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PresentacionImplDAO.
  */
@@ -22,31 +22,28 @@ public class PresentacionImplDAO implements PresentacionDAO{
 
 	/** The conn. */
 	//Variables BBDD
-	Connection conn;
+	private Connection conn;
+	
+	/** The pst. */
+	private PreparedStatement pst;
 	
 	/** The st. */
 	Statement st;
-	
-	/** The rs. */
-	ResultSet rs;
-	
-	/** The pst. */
-	PreparedStatement pst;
-	
 	
 
 	/**
 	 * Adds the presentacion.
 	 *
-	 * @param id            the id
-	 * @param tipo          the tipo
-	 * @param timestamp     the timestamp
+	 * @param idPres        the id pres
+	 * @param idConv        the id conv
+	 * @param idUser        the id user
+	 * @param fPres         the f pres
 	 * @param estado        the estado
 	 * @param docPresentado the doc presentado
 	 */
 	@Override
-	public void addPresentacion(String id, String tipo, String timestamp, boolean estado,
-			ArrayList<String> docPresentado) {
+	public void addPresentacion(String idPres,String idConv,String idUser, 
+								String fPres, boolean estado,ArrayList<String> docPresentado) {
 		
 		try {
 			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
@@ -55,12 +52,17 @@ public class PresentacionImplDAO implements PresentacionDAO{
 			if(conn != null) {
 				st = conn.createStatement();
 				
-				String insertarPres = "INSERT INTO presentaciones (idUser,typeUser,fecha,estado,docs) "
-						+ "VALUES ('"+id+"','"+tipo+"',CONVERT(DATETIME,'"+timestamp+"',103),CAST('"+estado+"' AS BIT),'"+docPresentado+"' )";
+				String insertarPres = "INSERT INTO presentaciones (idPres,idConv,idUser,fecha,estado,docs) "
+									  + "VALUES ('"+idPres+"','"+idConv+"','"+idUser+"',"
+									  + "CONVERT(DATETIME,'"+fPres+"',103),"
+									  + "CAST('"+estado+"' AS BIT),"
+									  + "'"+docPresentado+"' )";
+				
 				pst = conn.prepareStatement(insertarPres);
 				pst.executeUpdate();
 				
-				System.out.println("Creada Nueva Presentación en BBDD con ID: "+id+" tipo usuario: "+tipo+" y fecha: "+timestamp);
+				System.out.println("Creada Nueva Presentación en BBDD con ID Pres."+idPres+" ID Usuario: "+idUser+
+								   " y fecha: "+fPres);
 			}else {
 				System.out.println("No es posible insertar nuevos usuarios, no hay conexión con BBDD");
 			}
@@ -75,16 +77,16 @@ public class PresentacionImplDAO implements PresentacionDAO{
 	/**
 	 * Mod presentacion.
 	 *
-	 * @param idPres    the id pres
-	 * @param id        the id
-	 * @param tipo      the tipo
-	 * @param timestamp the timestamp
-	 * @param estado    the estado
-	 * @param docs      the docs
+	 * @param idPres the id pres
+	 * @param idConv the id conv
+	 * @param idUser the id user
+	 * @param fecha  the fecha
+	 * @param estado the estado
+	 * @param docs   the docs
 	 */
 	@Override
-	public void modPresentacion(String idPres,String id, String tipo, String timestamp, boolean estado,
-			ArrayList<String> docs) {
+	public void modPresentacion(String idPres,String idConv,String idUser, 
+								String fecha, boolean estado,ArrayList<String> docs) {
 		
 		try {
 			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
@@ -94,18 +96,20 @@ public class PresentacionImplDAO implements PresentacionDAO{
 				st = conn.createStatement();
 
 				String updatePres = "UPDATE presentaciones "+
-	                      			  "SET idUser = ?"+
-	                      			  ",typeUser = ?"+
+	                      			  "SET idPres = ?"+
+	                      			  ",idConv = ?"+
+	                      			  ",idUser = ?"+
 	                      			  ",fecha = CONVERT(DATETIME,?,103)"+
 	                      			  ",estado = CAST(? AS BIT)"+
 	                      			  ",docs = ?"+
 	                      			  " WHERE idPres = '"+idPres+"' " ;
 
 				pst = conn.prepareStatement(updatePres);
-				pst.setString(1, id);
-				pst.setString(2, tipo);
-				pst.setString(3, timestamp);
-				pst.setBoolean(4, estado);
+				pst.setString(1, idPres);
+				pst.setString(2, idConv);
+				pst.setString(3, idUser);
+				pst.setString(4, fecha);
+				pst.setBoolean(5, estado);
 				
 				//Pasamos los valores a un nuevo arraylist para poder actualizarlo en la BBDD
 				ArrayList<String> out = new ArrayList<String>();
@@ -114,7 +118,7 @@ public class PresentacionImplDAO implements PresentacionDAO{
 					value = docs.get(i);
 					out.add(value);
 				}
-				pst.setString(5,out.toString());
+				pst.setString(6,out.toString());
 				
 				
 				pst.executeUpdate(); //ejecutamos update

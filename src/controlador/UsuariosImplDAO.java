@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -14,6 +14,7 @@ import util.ConstantsDB;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class UsuariosImplDAO.
  */
@@ -193,6 +194,33 @@ public class UsuariosImplDAO implements UsuarioDAO{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Lista id user conv.
+	 *
+	 * @param c the c
+	 * @return the array list
+	 */
+	//Lista id usuarios enlazados con convocatorias y presentaciones, siendo solo Cuentadantes o Fiscales
+	@Override
+	public ArrayList<?> listaIdUserConv(ArrayList<String> c) {
+		try {
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			st = conn.createStatement();
+			
+			rs = st.executeQuery(ConstantsDB.queryListaIdUserConv);
+			
+			while(rs.next()) {
+				c.add(rs.getString(ConstantsDB.valueID.toString()));
+			}
+			conn.close();
+			
+		} catch (SQLException e) {
+			System.out.println("Error Conexión.No se pueden mostrar los datos.");
+			e.printStackTrace();
+		}
+		return c;
 	}
 
 

@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -28,7 +28,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -93,6 +92,8 @@ public class GestMunicipios extends JPanel {
 		setBounds(100, 100, 650, 450);
 		contentPane=this;
 		setLayout(null);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
 		
 		//Label Título
 		lbTitulo = new JLabel(ConstantsGestMunicipios.labelTitulo);
@@ -100,8 +101,6 @@ public class GestMunicipios extends JPanel {
 		lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lbTitulo.setBounds(6, 6, 638, 16);
 		add(lbTitulo);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
 		
 		//Label Tipo Usuario
 		lbTipoUsuario = new JLabel(ConstantsGestMunicipios.labelTipoConectado);

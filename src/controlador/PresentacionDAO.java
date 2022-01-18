@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -20,25 +20,28 @@ public interface PresentacionDAO {
 	/**
 	 * Adds the presentacion.
 	 *
+	 * @param idPres        the id pres
+	 * @param idConv        the id conv
 	 * @param idUser        the id user
-	 * @param tipo          the tipo
 	 * @param timestamp     the timestamp
 	 * @param estado        the estado
 	 * @param docPresentado the doc presentado
 	 */
-	public void addPresentacion(String idUser,String tipo,String timestamp,boolean estado,ArrayList<String> docPresentado);
+	public void addPresentacion(String idPres,String idConv,String idUser,
+								String timestamp,boolean estado,ArrayList<String> docPresentado);
 	
 	/**
 	 * Mod presentacion.
 	 *
 	 * @param idPres        the id pres
-	 * @param id            the id
-	 * @param tipo          the tipo
+	 * @param idConv        the id conv
+	 * @param idUser        the id user
 	 * @param timestamp     the timestamp
 	 * @param estado        the estado
 	 * @param docPresentado the doc presentado
 	 */
-	public void modPresentacion(String idPres,String id,String tipo,String timestamp,boolean estado,ArrayList<String> docPresentado);
+	public void modPresentacion(String idPres,String idConv,String idUser,
+								String timestamp,boolean estado,ArrayList<String> docPresentado);
 	
 	/**
 	 * Del presentacion.

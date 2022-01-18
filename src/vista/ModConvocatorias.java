@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -12,11 +12,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,7 +38,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import controlador.EventoImplDAO;
+import controlador.ConDB;
+import controlador.ConvImplDAO;
+import controlador.UsuariosImplDAO;
+import modelo.Convocatorias;
+import util.ConstantsDB;
 import util.ConstantsGestConvocatorias;
 import util.ConstantsGestMunicipios;
 import util.ConstantsMessage;
@@ -57,10 +67,10 @@ public class ModConvocatorias extends JDialog {
 	private static final long serialVersionUID = 1L;
 	
 	/** The tx cierre. */
-	private static JTextField txIdConvocatoria,txApertura,txCierre;;
+	private static JTextField txIdConvocatoria,txIdUser,txApertura,txCierre;;
 	
 	/** The lb docs. */
-	private JLabel lbTitulo,lbIdConvocatoria,lbDesc,lbApertura,lbCierre,lbEstado,lbDocs;
+	private JLabel lbTitulo,lbIdConvocatoria,lbIdUser,lbDesc,lbApertura,lbCierre,lbEstado,lbDocs;
 	
 	/** The btn del doc. */
 	private JButton okButton,cancelButton,btnAddDoc,btnDelDoc;
@@ -72,7 +82,7 @@ public class ModConvocatorias extends JDialog {
 	private JScrollPane scrollDesc,scrollDocs;
 	
 	/** The j combo tipo. */
-	private static JComboBox<String> jComboTipo;
+	private static JComboBox<String> cbIdUser,jComboTipo;
 	
 	/** The check cerrado. */
 	private static JCheckBox checkAbierto,checkCerrado;
@@ -84,27 +94,43 @@ public class ModConvocatorias extends JDialog {
 	/** The table docs. */
 	private static JTable tableDocs;
 	
-	/** The d cierre. */
-	//Variables Fecha
-	private Date dApertura,dCierre;
-	
 	/** The image error. */
 	//Variable ImageIcon
 	private ImageIcon imageError = new ImageIcon(AltaConvocatorias.class.getResource(ConstantsMessage.imgError));
 	
-	/** The edao. */
+	/** The i D usuarios. */
+	private ArrayList<String> iDUsuarios = new ArrayList<String>();
+	
+	/** The udao. */
+	private UsuariosImplDAO udao = new UsuariosImplDAO();
+	
+	/** The conv. */
+	private Convocatorias conv = new Convocatorias();
+	
+	/** The cdao. */
 	//variable clase EventoImplDAO
-	private EventoImplDAO edao = new EventoImplDAO();
+	private ConvImplDAO cdao = new ConvImplDAO();
+	
+	/** The st. */
+	//Variables BBDD
+	private Statement st;
+	
+	/** The rs. */
+	private ResultSet rs;
+	
+	/** The conn. */
+	private Connection conn;
 
 	/**
 	 * Instantiates a new mod convocatorias.
 	 */
 	public ModConvocatorias() {
-		setBounds(100, 100, 491, 450);
+		setBounds(100, 100, 491, 460);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setResizable(false); //impedimos que la ventana se pueda ampliar para evitar problemas de tamaño de campos
 		
 		//Label título
 		lbTitulo = new JLabel(ConstantsGestConvocatorias.lbtituloModConv);
@@ -115,18 +141,47 @@ public class ModConvocatorias extends JDialog {
 		
 		//Label idConvocatoria
 		lbIdConvocatoria = new JLabel(ConstantsGestConvocatorias.labelIdConvocatorias);
-		lbIdConvocatoria.setBounds(28, 53, 124, 16);
+		lbIdConvocatoria.setBounds(16, 36, 124, 16);
 		contentPanel.add(lbIdConvocatoria);
 		
 		//TextField idUsuario
 		txIdConvocatoria = new JTextField();
-		txIdConvocatoria.setBounds(164, 48, 258, 26);
+		txIdConvocatoria.setBounds(164, 31, 258, 26);
 		contentPanel.add(txIdConvocatoria);
 		txIdConvocatoria.setColumns(10);
 		
+		//Label id usuario
+		lbIdUser = new JLabel(ConstantsGestConvocatorias.labelUsuarioConvocatorias);
+		lbIdUser.setBounds(16, 64, 148, 16);
+		contentPanel.add(lbIdUser);
+		
+		//Combobox id usuario
+		cbIdUser = new JComboBox<String>();
+		cbIdUser.setBounds(164, 60, 118, 27);
+		contentPanel.add(cbIdUser);
+		ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
+		cbIdUser.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		
+		//Listener combobox Id Convocatorias para actualizar los datos cuando se selecciona otro item distinto
+		cbIdUser.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				infoUsuario();
+			}
+			
+		});
+		
+		//Campo tipo usuario
+		txIdUser = new JTextField();
+		txIdUser.setEditable(false);
+		txIdUser.setHorizontalAlignment(SwingConstants.CENTER);
+		txIdUser.setBounds(292, 59, 130, 26);
+		contentPanel.add(txIdUser);
+		txIdUser.setColumns(10);
+		
 		//Label Descripción
 		lbDesc = new JLabel(ConstantsGestConvocatorias.labelDescripcion);
-		lbDesc.setBounds(28, 93, 136, 16);
+		lbDesc.setBounds(16, 92, 136, 16);
 		contentPanel.add(lbDesc);
 		//Scroll Pane Desccirpción
 		scrollDesc = new JScrollPane();
@@ -138,34 +193,36 @@ public class ModConvocatorias extends JDialog {
 		
 		//Label Apertura
 		lbApertura = new JLabel(ConstantsGestConvocatorias.labelApertura);
-		lbApertura.setBounds(28, 185, 124, 16);
+		lbApertura.setBounds(28, 182, 124, 16);
 		contentPanel.add(lbApertura);
 		
 		//TextField fecha Apertura
 		txApertura = new JTextField();
-		txApertura.setBounds(164, 180, 136, 26);
+		txApertura.setBounds(164, 177, 136, 26);
 		contentPanel.add(txApertura);
 		txApertura.setColumns(10);
+		txApertura.addKeyListener(new innerKeyModConv());
 		
 		//Label Cierre
 		lbCierre = new JLabel(ConstantsGestConvocatorias.labelCierre);
-		lbCierre.setBounds(28, 213, 124, 16);
+		lbCierre.setBounds(28, 210, 124, 16);
 		contentPanel.add(lbCierre);
 		
 		//TextField fecha Cierre
 		txCierre = new JTextField();
-		txCierre.setBounds(164, 208, 136, 26);
+		txCierre.setBounds(164, 205, 136, 26);
 		contentPanel.add(txCierre);
 		txCierre.setColumns(10);
+		txCierre.addKeyListener(new innerKeyModConv());
 		
 		//Label Estado
 		lbEstado = new JLabel(ConstantsGestConvocatorias.labelEstado);
-		lbEstado.setBounds(28, 241, 118, 16);
+		lbEstado.setBounds(28, 244, 118, 16);
 		contentPanel.add(lbEstado);
 		
 		checkAbierto = new JCheckBox(ConstantsGestConvocatorias.tipoEstado[0].toString());
 		checkAbierto.setSelected(true);
-		checkAbierto.setBounds(164, 246, 128, 23);
+		checkAbierto.setBounds(164, 240, 128, 23);
 		contentPanel.add(checkAbierto);
 		checkAbierto.addItemListener(new ItemListener() {
 			@Override
@@ -178,7 +235,7 @@ public class ModConvocatorias extends JDialog {
 		});
 		
 		checkCerrado = new JCheckBox(ConstantsGestConvocatorias.tipoEstado[1].toString());
-		checkCerrado.setBounds(294, 244, 128, 23);
+		checkCerrado.setBounds(294, 238, 128, 23);
 		contentPanel.add(checkCerrado);
 		checkCerrado.addItemListener(new ItemListener() {
 			@Override
@@ -193,12 +250,12 @@ public class ModConvocatorias extends JDialog {
 		
 		//Label Documentos
 		lbDocs = new JLabel(ConstantsGestConvocatorias.labelDocs);
-		lbDocs.setBounds(28, 280, 171, 16);
+		lbDocs.setBounds(28, 275, 171, 16);
 		contentPanel.add(lbDocs);
 		
 		//ComboBox Tipo Documentos
 		jComboTipo = new JComboBox<String>();
-		jComboTipo.setBounds(28, 308, 171, 27);
+		jComboTipo.setBounds(28, 303, 148, 27);
 		contentPanel.add(jComboTipo);
 		jComboTipo.addItem(ConstantsGestConvocatorias.tipoDocs[0].toString());
 		jComboTipo.addItem(ConstantsGestConvocatorias.tipoDocs[1].toString());
@@ -208,19 +265,19 @@ public class ModConvocatorias extends JDialog {
 		
 		//Botón para añadir documentos desde el jComboTipo a listDocs
 		btnAddDoc = new JButton(ConstantsGestConvocatorias.btnAddDocs);
-		btnAddDoc.setBounds(28, 348, 68, 29);
+		btnAddDoc.setBounds(28, 342, 68, 29);
 		contentPanel.add(btnAddDoc);
 		btnAddDoc.addActionListener(new InnerActionModConvocatorias());
 		
 		//Botón Eliminar Documento
 		btnDelDoc = new JButton(ConstantsGestConvocatorias.btnDelDocs);
-		btnDelDoc.setBounds(131, 348, 68, 29);
+		btnDelDoc.setBounds(108, 342, 68, 29);
 		contentPanel.add(btnDelDoc);
 		btnDelDoc.addActionListener(new InnerActionModConvocatorias());
 		
 		//Scroll Tabla Documentos
 		scrollDocs = new JScrollPane();
-		scrollDocs.setBounds(226, 279, 196, 86);
+		scrollDocs.setBounds(226, 285, 196, 86);
 		contentPanel.add(scrollDocs);
 		
 		//Tabla para añadir los documentos a presentar
@@ -233,8 +290,7 @@ public class ModConvocatorias extends JDialog {
 		tableDocs.setShowVerticalLines(true);
 		model.addColumn(ConstantsGestConvocatorias.columnaTabla);
 		scrollDocs.setViewportView(tableDocs);
-		
-		
+
 		
 		{
 			JPanel buttonPane = new JPanel();
@@ -254,6 +310,8 @@ public class ModConvocatorias extends JDialog {
 				cancelButton.addActionListener(new InnerActionModConvocatorias());
 			}
 		}
+		
+		infoUsuario();
 	}
 	
 	/**
@@ -297,25 +355,17 @@ public class ModConvocatorias extends JDialog {
 					String apertura = txApertura.getText().toString();
 					String cierre = txCierre.getText().toString();
 					
-					SimpleDateFormat formatDates = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-					try {
-						dApertura = formatDates.parse(apertura);
-						dCierre = formatDates.parse(cierre);
-						
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					}
-					
 					
 					//Validaciones fechas
-					if(validationDateStart()==false || validationDateEnd() == false) {
+					if(conv.validaFecha(apertura) == false || conv.validaFecha(cierre) == false) {
 						//Sí el campo de la fecha de inicio no sigue el formato dd/mm/yyyy mostrará un mensaje de error
 						JOptionPane.showMessageDialog(null,ConstantsMessage.msg18,ConstantsMessage.msg0,
 													  JOptionPane.PLAIN_MESSAGE,imageError);
-					}else if(dApertura.compareTo(dCierre) >= 0) {
-						//Fecha de cierre no puede ser inferior a la fecha de apertura
-						JOptionPane.showMessageDialog(null,ConstantsMessage.msg22,ConstantsMessage.msg0,
-													  JOptionPane.PLAIN_MESSAGE,imageError);
+					}else if(conv.compruebaFecha(apertura, cierre) == false) {
+						//Fecha de presentación no puede ser inferior a la fecha de convocatoria
+						JOptionPane.showMessageDialog(null,ConstantsMessage.msg27,ConstantsMessage.msg0,
+													  JOptionPane.PLAIN_MESSAGE,
+													  imageError);
 					}else {
 						//Valores tabla documentos
 						ArrayList<String> docsValues = new ArrayList<String>();
@@ -325,7 +375,8 @@ public class ModConvocatorias extends JDialog {
 						
 						
 						//Modifica los datos en la BBDD en la tabla convocatorias
-						edao.modEvento(txIdConvocatoria.getText().toString(),
+						cdao.modEvento(txIdConvocatoria.getText().toString(),
+									   cbIdUser.getSelectedItem().toString(),
 									   textDesc.getText().toString() ,
 									   apertura, 
 									   cierre, 
@@ -334,6 +385,7 @@ public class ModConvocatorias extends JDialog {
 						
 						//Pasa los datos actualizados a la pantalla GestConvocatorias
 						GestConvocatorias.setRowConvocatorias(txIdConvocatoria.getText().toString(),  
+															  cbIdUser.getSelectedItem().toString(),
 															  textDesc.getText().toString(), 
 															  apertura, 
 															  cierre,
@@ -362,6 +414,79 @@ public class ModConvocatorias extends JDialog {
 		}
 		
 	}
+	
+	/**
+	 * The Class innerKeyModConv.
+	 */
+	public class innerKeyModConv implements KeyListener{
+
+		/**
+		 * Key typed.
+		 *
+		 * @param e the e
+		 */
+		@Override
+		public void keyTyped(KeyEvent e) {
+			if(e.getSource() == txApertura) {
+				//El campo passField solo admite 16 caracteres como máximo (01/01/2022 09:00) = 16 carácteres
+				if(txApertura.getText().length() == 16) e.consume();
+			}
+			
+			if(e.getSource() == txCierre) {
+				if(txCierre.getText().length() == 16) e.consume();
+			}
+			
+		}
+
+		/**
+		 * Key pressed.
+		 *
+		 * @param e the e
+		 */
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/**
+		 * Key released.
+		 *
+		 * @param e the e
+		 */
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	/**
+	 * Info usuario.
+	 */
+	//Método para obtener los usuarios asociados a las convocatorias
+	private void infoUsuario() {
+		String idConv = cbIdUser.getSelectedItem().toString();
+		try {
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			st = conn.createStatement();
+			
+			String queryInfoUsuarioConv = "SELECT tipoUsuario "
+										   + "FROM usuarios "
+										   + "WHERE idUsuario = '"+idConv+"' ";
+			
+			rs = st.executeQuery(queryInfoUsuarioConv);
+			
+			
+			while(rs.next()) {
+				txIdUser.setText(rs.getString(ConstantsDB.valueTipo));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	};
 	
 	
 	/**
@@ -394,7 +519,8 @@ public class ModConvocatorias extends JDialog {
 	/**
 	 * Gets the row convocatoria.
 	 *
-	 * @param id      the id
+	 * @param idConv  the id conv
+	 * @param idUser  the id user
 	 * @param desc    the desc
 	 * @param fInicio the f inicio
 	 * @param fFin    the f fin
@@ -402,8 +528,10 @@ public class ModConvocatorias extends JDialog {
 	 * @param docs    the docs
 	 */
 	//public static void getRowConvocatoria(String id,String desc,String fInicio,String fFin,String estado,ArrayList<String> docs) {
-	public static void getRowConvocatoria(String id,String desc,String fInicio,String fFin,String estado,String docs) {
-		txIdConvocatoria.setText(id);
+	public static void getRowConvocatoria(String idConv,String idUser,String desc,String fInicio,String fFin,
+										  String estado,String docs) {
+		txIdConvocatoria.setText(idConv);
+		cbIdUser.setSelectedItem(idUser);
 		textDesc.setText(desc);
 		txApertura.setText(fInicio);
 		txCierre.setText(fFin);
@@ -417,7 +545,7 @@ public class ModConvocatorias extends JDialog {
 			checkCerrado.setSelected(true);
 		}
 		
-		//Eliminamos los carácteres del Array para psar cada valor a la tabla de manera separada
+		//Eliminamos los carácteres del Array para pasar cada valor a la tabla de manera separada
 		String rx [] = docs.replaceAll("\\[", "").replaceAll("\\]", "").split(", ");
 		for (String a : rx) {
 			model.addRow(new Object[] {a});
@@ -425,51 +553,7 @@ public class ModConvocatorias extends JDialog {
 		
 	}
 	
-	
-	/**
-	 * Validation date start.
-	 *
-	 * @return true, if successful
-	 */
-	//Métodos para comprobar que las fechas de Apertura y Cierre se han introducido correctamente
-	private boolean validationDateStart() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        format.setLenient(false);
 
-        String dateInit = txApertura.getText().toString();
-        
-        try {
-			format.parse(dateInit);
-			return true;
-		} catch (ParseException e) {
-			e.getMessage();
-			txApertura.setText(""); //reiniciamos campo
-			return false;
-			
-		}
-	}
-	
-	/**
-	 * Validation date end.
-	 *
-	 * @return true, if successful
-	 */
-	private boolean validationDateEnd() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        format.setLenient(false);
-
-        String dateFinal = txCierre.getText().toString();
-        
-        try {
-			format.parse(dateFinal);
-			return true;
-		} catch (ParseException e) {
-			e.getMessage();
-			txCierre.setText(""); //reiniciamos campo
-			return false;
-		}
-	}
-	
 	/**
 	 * Change date start.
 	 *

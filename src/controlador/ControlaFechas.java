@@ -1,10 +1,9 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
-import java.util.Date;
 // TODO: Auto-generated Javadoc
 
 /**
@@ -21,14 +20,16 @@ public interface ControlaFechas {
 	 *
 	 * @param convocatoria the convocatoria
 	 * @param presentacion the presentacion
+	 * @return true, if successful
 	 */
-	public void compruebaFecha(Date convocatoria, Date presentacion);
+	public boolean compruebaFecha(String convocatoria, String presentacion);
 	
 	/**
-	 * Fecha to timestamp.
+	 * Valida fecha.
 	 *
 	 * @param fecha the fecha
+	 * @return true, if successful
 	 */
-	public void fechaToTimestamp(Date fecha);
+	public boolean validaFecha(String fecha);
 
 }

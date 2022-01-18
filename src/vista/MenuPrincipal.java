@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -98,6 +98,7 @@ public class MenuPrincipal extends JFrame {
 	//recurso imagen
 	private ImageIcon imageOff = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgOff));
 
+
 	/**
 	 * Instantiates a new menu principal.
 	 */
@@ -119,6 +120,7 @@ public class MenuPrincipal extends JFrame {
 		contentPane.setLayout(new CardLayout(0, 0));
 		//Con la función setLocationRelativeTo centramos la Ventana Principal en el CENTRO de la Pantalla//
 		setLocationRelativeTo(null);
+		setResizable(false); //impedimos que la ventana se pueda ampliar para evitar problemas de tamaño de campos
 		
 		
 		lbWelcome = new JLabel("BIENVENIDO");

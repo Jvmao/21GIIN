@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -81,7 +81,7 @@ public class ModMunicipios extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
-		
+		setResizable(false); //impedimos que la ventana se pueda ampliar para evitar problemas de tamaño de campos
 		
 		//Label título
 		lbTitulo = new JLabel(ConstantsGestMunicipios.lbModTitulo);

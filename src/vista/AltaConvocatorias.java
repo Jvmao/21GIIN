@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 
@@ -13,11 +13,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -28,9 +32,15 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import controlador.EventoImplDAO;
+
+import controlador.ConDB;
+import controlador.ConvImplDAO;
+import controlador.UsuariosImplDAO;
+import modelo.Convocatorias;
+import util.ConstantsDB;
 import util.ConstantsGestConvocatorias;
 import util.ConstantsMessage;
+
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JOptionPane;
@@ -56,10 +66,10 @@ public class AltaConvocatorias extends JDialog {
 	private static final long serialVersionUID = 1L;
 	
 	/** The tx cierre. */
-	private JTextField txIdConvocatoria,txApertura,txCierre;
+	private JTextField txIdConvocatoria,txUserConv,txApertura,txCierre;
 	
 	/** The lb docs. */
-	private JLabel lbTitulo,lbIdConvocatoria,lbDesc,lbApertura,lbCierre,lbEstado,lbDocs;
+	private JLabel lbTitulo,lbIdConvocatoria,lbUserConv,lbDesc,lbApertura,lbCierre,lbEstado,lbDocs;
 	
 	/** The btn del doc. */
 	private JButton okButton,cancelButton,btnAddDoc,btnDelDoc;
@@ -74,7 +84,7 @@ public class AltaConvocatorias extends JDialog {
 	private JCheckBox checkAbierto,checkCerrado;
 	
 	/** The j combo tipo. */
-	private JComboBox<String> jComboTipo;
+	private JComboBox<String> cbUserConv,jComboTipo;
 	
 	/** The model. */
 	//Variables Tabla
@@ -83,18 +93,35 @@ public class AltaConvocatorias extends JDialog {
 	/** The table docs. */
 	private JTable tableDocs;
 	
-	/** The d cierre. */
-	//Variables fechas
-	private Date dApertura,dCierre;
-	
 	/** The image error. */
 	//Recurso imagen
 	private ImageIcon imageError = new ImageIcon(AltaConvocatorias.class.getResource(ConstantsMessage.imgError));
 	
+	/** The i D usuarios. */
+	private ArrayList<String> iDUsuarios = new ArrayList<String>();
 	
-	/** The edao. */
+	/** The udao. */
+	private UsuariosImplDAO udao = new UsuariosImplDAO();
+	
+	/** The conv. */
+	private Convocatorias conv = new Convocatorias();
+	
+	/** The cdao. */
 	//Clase EventoImplDAO
-	private EventoImplDAO edao = new EventoImplDAO();
+	private ConvImplDAO cdao = new ConvImplDAO();
+	
+	/** The button pane. */
+	private JPanel buttonPane;
+	
+	/** The st. */
+	//Variables BBDD
+	private Statement st;
+	
+	/** The rs. */
+	private ResultSet rs;
+	
+	/** The conn. */
+	private Connection conn;
 
 	/**
 	 * Instantiates a new alta convocatorias.
@@ -106,6 +133,7 @@ public class AltaConvocatorias extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setResizable(false); //impedimos que la ventana se pueda ampliar para evitar problemas de tamaño de campos
 		
 		//Label título
 		lbTitulo = new JLabel(ConstantsGestConvocatorias.lbAltaTitulo);
@@ -114,16 +142,45 @@ public class AltaConvocatorias extends JDialog {
 		lbTitulo.setBounds(6, 10, 478, 20);
 		contentPanel.add(lbTitulo);
 		
-		//Label idUsuario
+		//Label id convocatoria
 		lbIdConvocatoria = new JLabel(ConstantsGestConvocatorias.labelIdConvocatorias);
-		lbIdConvocatoria.setBounds(28, 53, 136, 16);
+		lbIdConvocatoria.setBounds(28, 35, 136, 16);
 		contentPanel.add(lbIdConvocatoria);
 		
-		//TextField idUsuario
+		//TextField id convocatoria
 		txIdConvocatoria = new JTextField();
-		txIdConvocatoria.setBounds(164, 48, 258, 26);
+		txIdConvocatoria.setBounds(164, 30, 258, 26);
 		contentPanel.add(txIdConvocatoria);
 		txIdConvocatoria.setColumns(10);
+		
+		//Label idUsuario
+		lbUserConv = new JLabel(ConstantsGestConvocatorias.labelUsuarioConvocatorias);
+		lbUserConv.setBounds(28, 63, 136, 16);
+		contentPanel.add(lbUserConv);
+		
+		//Combobox Id Usuario convocatoria
+		cbUserConv = new JComboBox<String>();
+		cbUserConv.setBounds(164, 59, 108, 27);
+		contentPanel.add(cbUserConv);
+		ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
+		cbUserConv.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		
+		//Listener combobox Id Convocatorias para actualizar los datos cuando se selecciona otro item distinto
+		cbUserConv.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				infoUsuariosConv();
+			}
+			
+		});
+		
+		//Campo tipo de usuario
+		txUserConv = new JTextField();
+		txUserConv.setHorizontalAlignment(SwingConstants.CENTER);
+		txUserConv.setEditable(false);
+		txUserConv.setBounds(292, 58, 130, 26);
+		contentPanel.add(txUserConv);
+		txUserConv.setColumns(10);
 		
 		//Label Descripción
 		lbDesc = new JLabel(ConstantsGestConvocatorias.labelDescripcion);
@@ -147,6 +204,7 @@ public class AltaConvocatorias extends JDialog {
 		txApertura.setBounds(164, 177, 130, 26);
 		contentPanel.add(txApertura);
 		txApertura.setColumns(10);
+		txApertura.addKeyListener(new innerKeyAltaConv());
 		
 		//Label Cierre
 		lbCierre = new JLabel(ConstantsGestConvocatorias.labelCierre);
@@ -158,6 +216,7 @@ public class AltaConvocatorias extends JDialog {
 		txCierre.setBounds(164, 208, 130, 26);
 		contentPanel.add(txCierre);
 		txCierre.setColumns(10);
+		txCierre.addKeyListener(new innerKeyAltaConv());
 		
 		//Label Cierre
 		lbEstado = new JLabel(ConstantsGestConvocatorias.labelEstado);
@@ -235,12 +294,9 @@ public class AltaConvocatorias extends JDialog {
 		tableDocs.setShowVerticalLines(true);
 		model.addColumn(ConstantsGestConvocatorias.columnaTabla);
 		scrollDocs.setViewportView(tableDocs);
-		
-		
-		
 
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
@@ -257,6 +313,8 @@ public class AltaConvocatorias extends JDialog {
 				cancelButton.addActionListener(new InnerActionAltaConvocatorias());
 			}
 		}
+		
+		infoUsuariosConv(); //instanciamos método infoUsuariosConv()
 	}
 	
 	/**
@@ -274,7 +332,6 @@ public class AltaConvocatorias extends JDialog {
 			if(e.getSource()==btnAddDoc) {
 				String tipoDoc = jComboTipo.getSelectedItem().toString();
 				model.addRow(new Object[]{tipoDoc});
-				
 			}
 			
 			if(e.getSource()==btnDelDoc) {
@@ -298,24 +355,17 @@ public class AltaConvocatorias extends JDialog {
 					String apertura = txApertura.getText().toString();
 					String cierre = txCierre.getText().toString();
 					
-					SimpleDateFormat formatDates = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-					try {
-						dApertura = formatDates.parse(apertura);
-						dCierre = formatDates.parse(cierre);
-						
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					}
 					
 					//Validaciones fechas
-					if(validationDateStart()==false || validationDateEnd() == false) {
-						//Sí el campo de la fecha de inicio no sigue el formato dd/mm/yyyy mostrará un mensaje de error
+					if(conv.validaFecha(apertura) == false || conv.validaFecha(cierre) == false) {
+						//Sí el campo de la fecha de inicio o fin no sigue el formato dd/mm/yyyy mostrará un mensaje de error
 						JOptionPane.showMessageDialog(null,ConstantsMessage.msg18,ConstantsMessage.msg0,
 													  JOptionPane.PLAIN_MESSAGE,imageError);
-					}else if(dApertura.compareTo(dCierre) >= 0){
-						//Fecha de cierre no puede ser inferior a la fecha de apertura
-						JOptionPane.showMessageDialog(null,ConstantsMessage.msg22,ConstantsMessage.msg0,
-													  JOptionPane.PLAIN_MESSAGE,imageError);
+					}else if(conv.compruebaFecha(apertura, cierre) == false){
+						//Fecha de presentación no puede ser inferior a la fecha de convocatoria
+						JOptionPane.showMessageDialog(null,ConstantsMessage.msg27,ConstantsMessage.msg0,
+													  JOptionPane.PLAIN_MESSAGE,
+													  imageError);
 					}else {
 						//Valores tabla documentos
 						ArrayList<String> docsValues = new ArrayList<String>();
@@ -324,7 +374,8 @@ public class AltaConvocatorias extends JDialog {
 						}
 						
 						//Añade nuevo evento en la BBDD
-						edao.addEvento(txIdConvocatoria.getText().toString(),
+						cdao.addEvento(txIdConvocatoria.getText().toString(),
+									   cbUserConv.getSelectedItem().toString(),
 									   textDesc.getText().toString() ,
 									   apertura, 
 									   cierre, 
@@ -334,9 +385,10 @@ public class AltaConvocatorias extends JDialog {
 						
 						//Añade la convocatoria en la tabla de GestConvocatorias
 						GestConvocatorias.addRowConvocatorias(new Object[] {txIdConvocatoria.getText().toString(),
+																			cbUserConv.getSelectedItem().toString(),
 																			textDesc.getText().toString(),
-																			changeDateStart(),
-																			changeDateEnd(),
+																			apertura,
+																			cierre,
 																			tipoEstadoTabla(),
 																			docsValues});
 						
@@ -360,6 +412,79 @@ public class AltaConvocatorias extends JDialog {
 		}
 		
 	}
+	
+	/**
+	 * The Class innerKeyAltaConv.
+	 */
+	public class innerKeyAltaConv implements KeyListener{
+
+		/**
+		 * Key typed.
+		 *
+		 * @param e the e
+		 */
+		@Override
+		public void keyTyped(KeyEvent e) {
+			if(e.getSource() == txApertura) {
+				//El campo passField solo admite 16 caracteres como máximo (01/01/2022 09:00) = 16 carácteres
+				if(txApertura.getText().length() == 16) e.consume();
+			}
+			
+			if(e.getSource() == txCierre) {
+				if(txCierre.getText().length() == 16) e.consume();
+			}
+			
+		}
+
+		/**
+		 * Key pressed.
+		 *
+		 * @param e the e
+		 */
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/**
+		 * Key released.
+		 *
+		 * @param e the e
+		 */
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	/**
+	 * Info usuarios conv.
+	 */
+	//Método para obtener los usuarios asociados a las convocatorias desde la consulta a la BBDD
+	private void infoUsuariosConv() {
+		String idConv = cbUserConv.getSelectedItem().toString();
+		try {
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			st = conn.createStatement();
+			
+			String queryInfoUsuarioConv = "SELECT tipoUsuario "
+										   + "FROM usuarios "
+										   + "WHERE idUsuario = '"+idConv+"' ";
+			
+			rs = st.executeQuery(queryInfoUsuarioConv);
+			
+			
+			while(rs.next()) {
+				txUserConv.setText(rs.getString(ConstantsDB.valueTipo));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	};
 
 	/**
 	 * Tipo estado DB.
@@ -387,95 +512,7 @@ public class AltaConvocatorias extends JDialog {
 			}
 			return 1;
 	}
-	
-	/**
-	 * Validation date start.
-	 *
-	 * @return true, if successful
-	 */
-	//Métodos para comprobar que las fechas de Apertura y Cierre se han introducido correctamente
-	private boolean validationDateStart() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        format.setLenient(false);
-
-        String dateInit = txApertura.getText().toString();
-        
-        try {
-			format.parse(dateInit);
-			return true;
-		} catch (ParseException e) {
-			e.getMessage();
-			txApertura.setText(""); //reiniciamos campo
 			
-		}
-		return false;
-	}
-	
-	/**
-	 * Validation date end.
-	 *
-	 * @return true, if successful
-	 */
-	private boolean validationDateEnd() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        format.setLenient(false);
-
-        String dateFinal = txCierre.getText().toString();
-        
-        try {
-			format.parse(dateFinal);
-			return true;
-		} catch (ParseException e) {
-			e.getMessage();
-			txCierre.setText(""); //reiniciamos campo
-			return false;
-		}
-	}
-	
-	/**
-	 * Change date start.
-	 *
-	 * @return the string
-	 */
-	//Cambiar formato fecha inicio en BBDD para evitar problemas de conversión
-	public String changeDateStart() {
-		SimpleDateFormat fromUser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-		String start = null;
-		String reformattedApertura = null;
-		try {
-			start = txApertura.getText().toString();
-		    reformattedApertura = myFormat.format(fromUser.parse(start));
-		} catch (ParseException e) {
-		    e.printStackTrace();
-		}
-		return reformattedApertura;
-	}
-	
-	/**
-	 * Change date end.
-	 *
-	 * @return the string
-	 */
-	//Cambiar formato fecha cierre en BBDD para evitar problemas de conversión
-	public String changeDateEnd() {
-		SimpleDateFormat fromUser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		
-		String end = null;
-		String reformattedCierre = null;
-		
-		try {
-			end = txCierre.getText().toString();
-		    reformattedCierre = myFormat.format(fromUser.parse(end));
-		} catch (ParseException e) {
-		    e.printStackTrace();
-		}
-		return reformattedCierre;
-	}
-	
-	
 	
 	/**
 	 * Restart.

@@ -1,12 +1,13 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package modelo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import controlador.ControlaFechas;
 
 // TODO: Auto-generated Javadoc
@@ -15,8 +16,11 @@ import controlador.ControlaFechas;
  */
 public class Convocatorias extends Evento implements ControlaFechas{
 	
-	/** The estado apertura. */
+	/** The id usuario. */
 	//Atributos
+	private String idUsuario;
+	
+	/** The estado apertura. */
 	private Boolean estadoApertura;
 	
 	/** The documentos solicitados. */
@@ -31,22 +35,51 @@ public class Convocatorias extends Evento implements ControlaFechas{
 	/**
 	 * Instantiates a new convocatorias.
 	 *
+	 * @param idConvocatorias  the id convocatorias
+	 * @param descPresentacion the desc presentacion
+	 * @param fechaApertura    the fecha apertura
+	 * @param fechaCierre      the fecha cierre
+	 * @param idUsuario        the id usuario
 	 * @param estadoApertura   the estado apertura
 	 * @param docsConvocatoria the docs convocatoria
 	 */
 	//Constructor
-	public Convocatorias(Boolean estadoApertura, ArrayList<String> docsConvocatoria) {
-		super();
+	public Convocatorias(String idConvocatorias, String descPresentacion, Date fechaApertura, Date fechaCierre,
+						 String idUsuario,Boolean estadoApertura, ArrayList<String> docsConvocatoria) 
+	
+	{
+		super(idConvocatorias,descPresentacion,fechaApertura,fechaCierre);
+		this.idUsuario = idUsuario;
 		this.estadoApertura = estadoApertura;
 		this.documentosSolicitados = docsConvocatoria;
 	}
 
+
+	/**
+	 * Gets the id usuario.
+	 *
+	 * @return the id usuario
+	 */
+	//Getters and Setters
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+
+	/**
+	 * Sets the id usuario.
+	 *
+	 * @param idUsuario the new id usuario
+	 */
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+	
+	
 	/**
 	 * Gets the estado apertura.
 	 *
 	 * @return the estado apertura
 	 */
-	//Getters and Setters
 	public Boolean getEstadoApertura() {
 		return estadoApertura;
 	}
@@ -86,37 +119,59 @@ public class Convocatorias extends Evento implements ControlaFechas{
 	//Método toString()
 	@Override
 	public String toString() {
-		return "Convocatorias [estadoApertura=" + estadoApertura + ", docsConvocatoria=" + documentosSolicitados + "]";
+		return "Convocatorias [idUsuario=" + idUsuario + ", estadoApertura=" + estadoApertura
+				+ ", documentosSolicitados=" + documentosSolicitados + "]";
 	}
 
 	/**
 	 * Comprueba fecha.
 	 *
-	 * @param convocatoria the convocatoria
-	 * @param presentacion the presentacion
+	 * @param fechaUno the fecha uno
+	 * @param fechaDos the fecha dos
+	 * @return true, if successful
 	 */
 	//Métodos implementados desde interface ControlaFechas
 	@Override
-	public void compruebaFecha(Date convocatoria, Date presentacion) {
-		// TODO Auto-generated method stub
+	public boolean compruebaFecha(String fechaUno, String fechaDos) { //comprobamos que la fecha dos no sea mayor a la fecha uno
+		SimpleDateFormat formatDates = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date firstDate ;
+		Date secondDate;
 		
+		try {
+			firstDate = formatDates.parse(fechaUno);
+			secondDate = formatDates.parse(fechaDos);
+			
+			if(firstDate.compareTo(secondDate) >= 0)
+				return false;
+			
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+		
+		return true;
 	}
 
+
+
 	/**
-	 * Fecha to timestamp.
+	 * Valida fecha.
 	 *
 	 * @param fecha the fecha
+	 * @return true, if successful
 	 */
 	@Override
-	public void fechaToTimestamp(Date fecha) {
-		// TODO Auto-generated method stub
-		
+	public boolean validaFecha(String fecha) { //validamos que la fecha introducida sigue el siguiente formato
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        format.setLenient(false);
+        
+        try {
+			format.parse(fecha);
+			return true;
+		} catch (ParseException e) {
+			e.getMessage();
+			return false;
+		}
 	}
-	
-	
-	
-	
-	
-	
+
 
 }

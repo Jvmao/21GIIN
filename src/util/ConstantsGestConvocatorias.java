@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package util;
@@ -20,10 +20,13 @@ public class ConstantsGestConvocatorias {
 	public final static String tituloBotonera[] = {"Alta","Modificación","Eliminar"};
 	
 	/** The Constant tableColumns. */
-	public final static String tableColumns[] = { "CONVOCATORIA", "DESCRIPCIÓN","APERTURA","CIERRE","ESTADO","DOCUMENTOS" };
+	public final static String tableColumns[] = { "ID Conv.","Usuario", "Desc.","Apertura","Cierre","Estado","Docs." };
 	
 	/** The Constant labelIdConvocatorias. */
 	public final static String labelIdConvocatorias = "ID Convocatorias";
+	
+	/** The Constant labelUsuarioConvocatorias. */
+	public final static String labelUsuarioConvocatorias = "Usuario Convocatorias";
 	
 	/** The Constant labelDescripcion. */
 	public final static String labelDescripcion = "Descripción";

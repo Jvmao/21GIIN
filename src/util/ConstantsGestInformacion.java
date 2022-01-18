@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package util;
@@ -20,16 +20,18 @@ public class ConstantsGestInformacion {
 	public final static String labelInfoConv = "Información Convocatorias";
 	
 	/** The Constant tableColumnsConv. */
-	public final static String tableColumnsConv[] = { "Desc. Presentacion","Fecha Apertura", "Fecha Cierre","Estado","Num. Documentos" };
+	public final static String tableColumnsConv[] = { "Conv.","Usuario","Desc. Pres.",
+													  "Fecha Apertura", "Fecha Cierre",
+													  "Estado","Num. Docs." };
 	
 	/** The Constant labelTotales. */
-	public final static String labelTotales[] = {"Abiertos","Cerrados"};
+	public final static String labelTotales[] = {"Convocatorias Abiertas","Convocatorioas Cerradas"};
 	
 	/** The Constant labelInfoPres. */
 	public final static String labelInfoPres = "Información Presentaciones";
 	
 	/** The Constant tableColumnsPres. */
-	public final static String tableColumnsPres[] = { "ID Mun.","ID Usuario","Cat. Mun.", "Fecha Pres.","Estado","Nº Doc." };
+	public final static String tableColumnsPres[] = { "Muninicipio","Usuario","Cat. Mun.","Fecha Pres.","Estado","Nº Doc. Pres." };
 	
 	
 	/** The Constant imgInformacion. */

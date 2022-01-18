@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 
@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.util.Date;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,7 +31,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.ConDB;
-import controlador.EventoImplDAO;
+import controlador.ConvImplDAO;
 import util.ConstantsDB;
 import util.ConstantsGestConvocatorias;
 import util.ConstantsMessage;
@@ -85,8 +84,8 @@ public class GestConvocatorias extends JPanel {
 	/** The mc. */
 	private ModConvocatorias mc = new ModConvocatorias();
 	
-	/** The edao. */
-	private EventoImplDAO edao = new EventoImplDAO();
+	/** The cdao. */
+	private ConvImplDAO cdao = new ConvImplDAO();
 
 
 	/** The image error. */
@@ -100,6 +99,8 @@ public class GestConvocatorias extends JPanel {
 		setBounds(100, 100, 650, 450);
 		contentPane=this;
 		setLayout(null);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
 		
 		//Label Título
 		lbTitulo = new JLabel(ConstantsGestConvocatorias.labelTitulo);
@@ -107,8 +108,6 @@ public class GestConvocatorias extends JPanel {
 		lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lbTitulo.setBounds(6, 6, 638, 16);
 		add(lbTitulo);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
 		
 		//Label Tipo Usuario
 		lbTipoUsuario = new JLabel(ConstantsGestConvocatorias.labelTipoConectado);
@@ -155,11 +154,12 @@ public class GestConvocatorias extends JPanel {
 		jTableConvocatorias.setShowVerticalLines(true);
 	    scrollPane.setViewportView(jTableConvocatorias);
 	    model.addColumn(ConstantsGestConvocatorias.tableColumns[0]); //ID Convocatoria
-	    model.addColumn(ConstantsGestConvocatorias.tableColumns[1]); //Descripción
-	    model.addColumn(ConstantsGestConvocatorias.tableColumns[2]); //Fecha Apertura
-	    model.addColumn(ConstantsGestConvocatorias.tableColumns[3]); //Fecha Cierre
-	    model.addColumn(ConstantsGestConvocatorias.tableColumns[4]); //Estado
-	    model.addColumn(ConstantsGestConvocatorias.tableColumns[5]); //Documentos
+	    model.addColumn(ConstantsGestConvocatorias.tableColumns[1]); //ID Usario
+	    model.addColumn(ConstantsGestConvocatorias.tableColumns[2]); //Descripción
+	    model.addColumn(ConstantsGestConvocatorias.tableColumns[3]); //Fecha Apertura
+	    model.addColumn(ConstantsGestConvocatorias.tableColumns[4]); //Fecha Cierre
+	    model.addColumn(ConstantsGestConvocatorias.tableColumns[5]); //Estado
+	    model.addColumn(ConstantsGestConvocatorias.tableColumns[6]); //Documentos
 		
 		//Botón Alta Usuarios
 		btnAlta = new JButton(ConstantsGestConvocatorias.tituloBotonera[0].toString());
@@ -204,7 +204,12 @@ public class GestConvocatorias extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == btnAlta) {
-				ac.setVisible(true); //accedemos a la pantalla de Alta de nuevas convocatorias
+				try {
+					ac.setVisible(true); //accedemos a la pantalla de Alta de nuevas convocatorias
+				}catch(NullPointerException n) {
+					n.getStackTrace();
+				}
+	
 			}
 			
 			if(e.getSource()==btnMod) {
@@ -215,15 +220,16 @@ public class GestConvocatorias extends JPanel {
 				}else {
 					mc.setVisible(true);
 					//Recogemos los valores de la fila seleccionada
-					String id = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 0).toString();
-					String desc = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 1).toString();
-					String inicio = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 2).toString();
-					String fin = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 3).toString();
-					String estado = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 4).toString();
-					String docs = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 5).toString();
+					String idConv = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 0).toString();
+					String idUser = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 1).toString();
+					String desc = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 2).toString();
+					String inicio = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 3).toString();
+					String fin = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 4).toString();
+					String estado = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 5).toString();
+					String docs = jTableConvocatorias.getValueAt(jTableConvocatorias.getSelectedRow(), 6).toString();
 					
 					//Pasamos los valores recogidos en la tabla jTableConvocatorias a la pantalla ModConvocatorias
-					ModConvocatorias.getRowConvocatoria(id, desc,inicio,fin,estado,docs);
+					ModConvocatorias.getRowConvocatoria(idConv,idUser, desc,inicio,fin,estado,docs);
 
 				}
 
@@ -245,14 +251,13 @@ public class GestConvocatorias extends JPanel {
 					int confirm=JOptionPane.showConfirmDialog(null,ConstantsMessage.msg17) ;
 					if(JOptionPane.OK_OPTION==confirm){
 						model.removeRow(a); 
-						edao.delEvento(id);
+						cdao.delEvento(id);
 					}
 				}
 			}
 			
 		}
-		
-		
+			
 	}
 	
 	/**
@@ -288,7 +293,8 @@ public class GestConvocatorias extends JPanel {
 
 		    //Obtenemos todos los valores de la BBDD y los vamos añadiendo uno a uno en la tabla
 		    while (rs.next()) {
-		    	String id = rs.getString(ConstantsDB.valueIDConvocatorias);
+		    	String idConv = rs.getString(ConstantsDB.valueIDConvocatorias);
+		    	String idUser = rs.getString(ConstantsDB.valueIDUserConv);
 		    	String desc = rs.getString(ConstantsDB.valueDescPresentacion);
 		    	String apertura = rs.getString(ConstantsDB.valueFechaApertura);
 		    	String cierre = rs.getString(ConstantsDB.valueFechaCierre);
@@ -305,7 +311,8 @@ public class GestConvocatorias extends JPanel {
 		    	
 
 		    	//Añadimos los valores en cada fila de la tabla dinámicamente
-		        model.addRow(new Object[]{id,
+		        model.addRow(new Object[]{idConv,
+		        							idUser,
 		        							desc,
 		        							outputApertura.format(dateValueApertura),
 		        							outputCierre.format(dateValueCierre),
@@ -355,7 +362,8 @@ public class GestConvocatorias extends JPanel {
 	/**
 	 * Sets the row convocatorias.
 	 *
-	 * @param id     the id
+	 * @param idConv the id conv
+	 * @param idUser the id user
 	 * @param desc   the desc
 	 * @param inicio the inicio
 	 * @param fin    the fin
@@ -363,15 +371,16 @@ public class GestConvocatorias extends JPanel {
 	 * @param docs   the docs
 	 */
 	//Recogemos los valores desde ModConvocatorias y lo actualizamos en la tabla jTableConvocatorias de esta clase
-	public static void setRowConvocatorias(String id,String desc,String inicio,String fin,int estado,ArrayList<String> docs) {
+	public static void setRowConvocatorias(String idConv,String idUser,String desc,String inicio,String fin,int estado,ArrayList<String> docs) {
 		DefaultTableModel model = (DefaultTableModel) jTableConvocatorias.getModel();
 		int i = jTableConvocatorias.getSelectedRow();
-		model.setValueAt(id, i, 0);   	//Actualizamos valor id
-		model.setValueAt(desc, i, 1); 	//Actualizamos valor descripción
-		model.setValueAt(inicio, i, 2); //Actualizamos valor fecha inicio
-		model.setValueAt(fin, i, 3); 	//Actualizamos valor fecha fin
-		model.setValueAt(estado, i, 4); //Actualizamos valor estado
-		model.setValueAt(docs,i,5); 	//Actualizamos valor documentos
+		model.setValueAt(idConv,i,0);   //Actualizamos valor idConv
+		model.setValueAt(idUser,i,1);	//Actualizamos valor idUser
+		model.setValueAt(desc,i,2); 	//Actualizamos valor descripción
+		model.setValueAt(inicio,i,3); 	//Actualizamos valor fecha inicio
+		model.setValueAt(fin,i,4); 		//Actualizamos valor fecha fin
+		model.setValueAt(estado,i,5); 	//Actualizamos valor estado
+		model.setValueAt(docs,i,6); 	//Actualizamos valor documentos
 
 	}
 	

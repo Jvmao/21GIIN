@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package util;
@@ -80,10 +80,19 @@ public class ConstantsMessage {
 	public final static String msg22 = "Fecha de Cierre No puede ser Inferior o Igual a Fecha de Apertura";
 	
 	/** The Constant msg23. */
-	public final static String msg23 = "Faltan Campos por Rellenar o el Formato de Fechas es Incorrecto";
+	public final static String msg23 = "Formato de Fechas es Incorrecto";
 	
 	/** The Constant msg24. */
 	public final static String msg24 = "Usuario sin Permisos";
+	
+	/** The Constant msg25. */
+	public final static String msg25 = "Fecha Presentación debe ser mayor a fecha de Convocatoria";
+	
+	/** The Constant msg26. */
+	public final static String msg26 = "Elemento Repetido. Seleccione uno distinto";
+	
+	/** The Constant msg27. */
+	public final static String msg27 = "Fecha Fin no puede ser menor que Fecha Inicio";
 
 
 	/** The Constant optionsClose. */

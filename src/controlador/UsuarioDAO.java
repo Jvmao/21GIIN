@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -31,6 +31,14 @@ public interface UsuarioDAO {
 	 * @return the array list
 	 */
 	public ArrayList<?> listaIdUsuarios(ArrayList<String> c);
+	
+	/**
+	 * Lista id user conv.
+	 *
+	 * @param c the c
+	 * @return the array list
+	 */
+	public ArrayList<?> listaIdUserConv(ArrayList<String> c);
 	
 	/**
 	 * Adds the user.

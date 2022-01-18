@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -14,6 +14,7 @@ import util.ConstantsDB;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MunicipiosImplDAO.
  */
@@ -113,6 +114,8 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 				
 				String insertar = "INSERT INTO municipios (idMunicipio,catMunicipio,idUser,tipoUsuario) "
 						+ "VALUES ('"+id+"','"+categoria+"','"+idUser+"','"+tipo+"')";
+	
+				
 				pst = conn.prepareStatement(insertar);
 				pst.executeUpdate();
 				
@@ -151,6 +154,7 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 				                      	  ",idUser = ?"+
 				                      	  ",tipoUsuario = ?"+
 				                      	  " WHERE idMunicipio = '"+idMun+"'";
+
 				
 				pst = conn.prepareStatement(updateMunicipios);
 				pst.setString(1, idMun);
@@ -187,6 +191,8 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 				String eliminar = "DELETE "+
 								  "FROM municipios "+
 								  "WHERE idMunicipio = '"+id+"'";
+				
+				
 				pst = conn.prepareStatement(eliminar);
 				pst.executeUpdate();
 				

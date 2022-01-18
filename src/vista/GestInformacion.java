@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -7,7 +7,6 @@ package vista;
 import java.awt.Color;
 import java.awt.Font;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -70,9 +69,11 @@ public class GestInformacion extends JPanel {
 	 * Instantiates a new gest informacion.
 	 */
 	public GestInformacion() {
-		setBounds(100, 100, 650, 450);
+		setBounds(100, 100, 628, 450);
 		contentPane=this;
 		setLayout(null);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
 		
 		//Label Título
 		lbTitulo = new JLabel(ConstantsGestInformacion.labelTituloInformacion);
@@ -80,8 +81,6 @@ public class GestInformacion extends JPanel {
 		lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lbTitulo.setBounds(6, 6, 638, 16);
 		add(lbTitulo);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
 		
 		//Label Tipo Usuario
 		lbTipoUsuario = new JLabel(ConstantsGestInformacion.labelTipoConectado);
@@ -106,7 +105,7 @@ public class GestInformacion extends JPanel {
 		
 		lbImageInf = new JLabel("");
 		lbImageInf.setHorizontalAlignment(SwingConstants.CENTER);
-		lbImageInf.setBounds(521, 7, 123, 94);
+		lbImageInf.setBounds(505, 7, 117, 94);
 		add(lbImageInf);
 	    //Icono presentaciones
 		lbImageInf.setIcon(new ImageIcon(ConstantsGestInformacion.class.getResource(ConstantsGestInformacion.imgInformacion)));
@@ -119,7 +118,7 @@ public class GestInformacion extends JPanel {
 		
 		//Scroll Tabla Documentos
 		scrollConv = new JScrollPane();
-		scrollConv.setBounds(16, 120, 444, 86);
+		scrollConv.setBounds(16, 120, 583, 86);
 		contentPane.add(scrollConv);
 		
 		//Tabla para mostrar los documentos 
@@ -134,42 +133,44 @@ public class GestInformacion extends JPanel {
 		modelConv.addColumn(ConstantsGestInformacion.tableColumnsConv[1]);
 		modelConv.addColumn(ConstantsGestInformacion.tableColumnsConv[2]);
 		modelConv.addColumn(ConstantsGestInformacion.tableColumnsConv[3]);
+		modelConv.addColumn(ConstantsGestInformacion.tableColumnsConv[4]);
+		modelConv.addColumn(ConstantsGestInformacion.tableColumnsConv[5]);
 		scrollConv.setViewportView(tableConv);
 		
 		//Label Total Abiertos
 		lbTotalAbiertos = new JLabel(ConstantsGestInformacion.labelTotales[0]);
-		lbTotalAbiertos.setBounds(472, 121, 74, 16);
+		lbTotalAbiertos.setBounds(16, 217, 191, 16);
 		add(lbTotalAbiertos);
 		
 		//Campo Total Abiertos
 		txTotalAbiertos = new JTextField();
 		txTotalAbiertos.setEditable(false);
 		txTotalAbiertos.setHorizontalAlignment(SwingConstants.CENTER);
-		txTotalAbiertos.setBounds(558, 116, 41, 26);
+		txTotalAbiertos.setBounds(219, 212, 41, 26);
 		add(txTotalAbiertos);
 		txTotalAbiertos.setColumns(10);
 		
 		//Label Total Cerrados
 		lbTotalCerrados = new JLabel(ConstantsGestInformacion.labelTotales[1]);
-		lbTotalCerrados.setBounds(472, 185, 61, 16);
+		lbTotalCerrados.setBounds(317, 217, 191, 16);
 		add(lbTotalCerrados);
 		
 		//Campo Total Cerrados
 		txTotalCerrados = new JTextField();
 		txTotalCerrados.setEditable(false);
 		txTotalCerrados.setHorizontalAlignment(SwingConstants.CENTER);
-		txTotalCerrados.setBounds(558, 180, 41, 26);
+		txTotalCerrados.setBounds(520, 212, 41, 26);
 		add(txTotalCerrados);
 		txTotalCerrados.setColumns(10);
 		
 		//Label Info Presentaciones
 		lbInfoPres = new JLabel(ConstantsGestInformacion.labelInfoPres);
-		lbInfoPres.setBounds(16, 218, 444, 16);
+		lbInfoPres.setBounds(16, 263, 444, 16);
 		add(lbInfoPres);
 		
 		//Scroll Tabla Presentaciones
 		scrollPres = new JScrollPane();
-		scrollPres.setBounds(16, 238, 583, 86);
+		scrollPres.setBounds(16, 283, 583, 86);
 		contentPane.add(scrollPres);
 		
 		//Tabla para mostrar los documentos 
@@ -218,6 +219,8 @@ public class GestInformacion extends JPanel {
 
 		    //Obtenemos todos los valores de la BBDD y los vamos añadiendo uno a uno en la tabla
 		    while (rs.next()) {
+		    	String idConv = rs.getString(ConstantsDB.valueIdConInfo);
+		    	String idUser = rs.getString(ConstantsDB.valueIdUserInfo);
 		    	String descConv = rs.getString(ConstantsDB.valueDescConv);
 		    	String fApertura = rs.getString(ConstantsDB.valueApertura);
 		    	String fCierre = rs.getString(ConstantsDB.valueCierre);
@@ -235,7 +238,9 @@ public class GestInformacion extends JPanel {
 		    	SimpleDateFormat outputCierre = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 		    	//Añadimos los valores en cada fila de la tabla dinámicamente
-		        modelConv.addRow(new Object[]{descConv,
+		        modelConv.addRow(new Object[]{idConv,
+		        								idUser,
+		        								descConv,
 		        								outputApertura.format(dateValueApertura),
 		        								outputCierre.format(dateValueCierre),
 		        								estado});      
@@ -272,19 +277,22 @@ public class GestInformacion extends JPanel {
 		    	int estPres = rs.getInt(ConstantsDB.valuesEstadoPres);
 				String docPres = rs.getString(ConstantsDB.valuesDocsPres);
 		    	
+				//Cambiamos formato de fecha de BBDD a formato en la aplicación
 		    	SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		    	Date dateValueApertura = input.parse(fPres);
-		    	//SimpleDateFormat outputApertura = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		    	SimpleDateFormat outputApertura = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		    	
+		    	//Removemos los carácteres del arryaList para contar sus elementos
 		    	String rgx [] = docPres.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
 				
+		    	//Contamos los elementos del ArrayList
 				int nDocs = 0;
 				for(String a:rgx) {
 					a.toString();
 					nDocs++;
 				}
 		    	
+				//Añadimos la fila correspondiente en la talba
 		    	modelPres.addRow(new Object[] {idMun,
 		    									idUser,
 		    									catMun,
@@ -321,9 +329,9 @@ public class GestInformacion extends JPanel {
 		int totalAbiertos = 0;
 		int totalCerrados = 0;
         for (int i = 0; i < tableConv.getRowCount(); i++) {
-            if (tableConv.getValueAt(i, 3).equals(1)) {
+            if (tableConv.getValueAt(i, 5).equals(1)) {
             	totalAbiertos++;
-            }else if(tableConv.getValueAt(i, 3).equals(0)) {
+            }else if(tableConv.getValueAt(i, 5).equals(0)) {
             	totalCerrados++;
             }
         }

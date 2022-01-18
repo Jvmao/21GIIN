@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -14,6 +14,7 @@ import java.util.Properties;
 
 import util.ConstantsDB;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ConDB.
  */

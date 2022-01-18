@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import controlador.ConDB;
 import controlador.UsuariosImplDAO;
+import modelo.Usuarios;
 import util.ConstantsDB;
 import util.ConstantsGestUsuarios;
 import util.ConstantsMessage;
@@ -22,7 +23,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -89,6 +89,9 @@ public class GestUsuarios extends JPanel {
 	/** The image error. */
 	//Imagen Error Mensaje
 	private ImageIcon imageError = new ImageIcon(GestPresentaciones.class.getResource(ConstantsMessage.imgError));
+	
+	/** The u. */
+	private Usuarios u = new Usuarios();
 
 	/**
 	 * Instantiates a new gest usuarios.
@@ -234,7 +237,7 @@ public class GestUsuarios extends JPanel {
 	
 	
 	/**
-	 * The Class InnerAction.
+	 * The Class InnerActionGestUsuarios.
 	 */
 	//Definimos los actionListener de los componentes desde la inner class
 	public class InnerActionGestUsuarios implements ActionListener{

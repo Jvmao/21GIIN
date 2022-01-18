@@ -1,5 +1,5 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -32,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Login.
  */
@@ -101,6 +102,7 @@ public class Login extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setResizable(false); //impedimos que la ventana se pueda ampliar para evitar problemas de tamaño de campos
 		
 		//Label Tipo Usuario
 		lbUser = new JLabel(ConstantsLogin.labelTipoUsuario);
@@ -132,7 +134,7 @@ public class Login extends JFrame {
 		txPass.setBounds(106, 141, 192, 26);
 		contentPane.add(txPass);
 		txPass.setColumns(10);
-		txPass.addKeyListener(new InnerKey());
+		txPass.addKeyListener(new innerKeyLogin());
 		
 		//Botón Reset
 		btnReset = new JButton(ConstantsLogin.tituloBotonera[0].toString());
@@ -260,10 +262,10 @@ public class Login extends JFrame {
 	}
 	
 	/**
-	 * The Class InnerKey.
+	 * The Class innerKeyLogin.
 	 */
 	//Innerclass para los eventos de teclado
-	public class InnerKey implements KeyListener{
+	public class innerKeyLogin implements KeyListener{
 
 		/**
 		 * Key typed.

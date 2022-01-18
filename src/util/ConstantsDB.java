@@ -1,10 +1,11 @@
 /*
- * 11 ene 2022
+ * 18 ene 2022
  * Jose V. Martí
  */
 package util;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ConstantsDB.
  */
@@ -13,13 +14,13 @@ public class ConstantsDB {
 	/** The Constant pathProperties. */
 	public final static String pathProperties = "src/resources/db_conf.properties";
 	
-	/** The Constant s. */
+	/** The Constant server. */
 	public final static String server = "db.conn.url";
 	
-	/** The Constant u. */
+	/** The Constant user. */
 	public final static String user = "db.username";
 	
-	/** The Constant p. */
+	/** The Constant pass. */
 	public final static String pass = "db.password";
 	
 	/** The Constant queryUsers. */
@@ -80,6 +81,9 @@ public class ConstantsDB {
 	//Valores columnas tabla convocatorias
 	public final static String valueIDConvocatorias = "idConvocatorias";
 	
+	/** The Constant valueIDUserConv. */
+	public final static String valueIDUserConv = "idUser";
+	
 	/** The Constant valueDescPresentacion. */
 	public final static String valueDescPresentacion = "descPresentacion";
 	
@@ -94,36 +98,31 @@ public class ConstantsDB {
 	
 	/** The Constant valueDocsPresentados. */
 	public final static String valueDocsPresentados = "docsPresentados";
+	
+	/** The Constant queryListaIdConvocatorias. */
+	public final static String queryListaIdConvocatorias = "SELECT idConvocatorias FROM convocatorias ORDER BY 1";
 
 	/** The Constant queryListaConvocatorias. */
 	//Consulta para listar todas las convocatorias en GestConvocatoria
-	/**public final static String queryListaConvocatorias = "SELECT "
-													   + "idConvocatorias,"
-													   + "descPresentacion,"
-													   + "CONVERT(DATETIME,fechaApertura,103) AS fechaApertura,"
-													   + "CONVERT(DATETIME,fechaCierre,103) AS fechaCierre,"
-													   + "estadoApertura,"
-													   + "docsPresentados "
-													   + "FROM convocatorias ORDER BY 1";**/
-	
 	public final static String queryListaConvocatorias = "SELECT "
 													   + "idConvocatorias,"
+													   + "idUser,"
 													   + "descPresentacion,"
 													   + "fechaApertura,"
 													   + "fechaCierre,"
 													   + "estadoApertura,"
 													   + "docsPresentados "
-													   + "FROM convocatorias ORDER BY 1";
+													   + "FROM convocatorias ORDER BY 1,2";
 	
 	/** The Constant valueIDPres. */
 	//Valores columnas tabla presentaciones
 	public final static String valueIDPres = "idPres";
 	
+	/** The Constant valuesIDConvPres. */
+	public final static String valuesIDConvPres = "idConv";
+	
 	/** The Constant valueIDUser. */
 	public final static String valueIDUser = "idUser";
-	
-	/** The Constant valueTypeUser. */
-	public final static String valueTypeUser = "typeUser";
 	
 	/** The Constant valueFecha. */
 	public final static String valueFecha = "fecha";
@@ -138,8 +137,8 @@ public class ConstantsDB {
 	//Consulta para listar todas las convocatorias en GestConvocatoria
 	public final static String queryListaPresentaciones = "SELECT "
 														+ "idPres,"
+														+ "idConv,"
 														+ "idUser,"
-														+ "typeUser,"
 														+ "fecha,"
 														+ "estado,"
 														+ "docs "
@@ -148,14 +147,26 @@ public class ConstantsDB {
 	/** The Constant queryListaEstadoConvocatorias. */
 	//Listar datos de la tabla convocatorias en la pantalla de información
 	public final static String queryListaEstadoConvocatorias = "SELECT "
+															 + "idConvocatorias,"
+															 + "idUser,"
 															 + "descPresentacion,"
 															 + "fechaApertura,"
 															 + "fechaCierre,"
 															 + "estadoApertura "
-															 + "FROM convocatorias ORDER BY 2,4";
+															 + "FROM convocatorias ORDER BY 1,2";
+	
+	/** The Constant queryListaIdUserConv. */
+	public final static String queryListaIdUserConv = "SELECT idUsuario FROM usuarios WHERE tipoUsuario IN ('Cuentadante','Fiscal')";
+	
+	/** The Constant valueIdConInfo. */
+	//Valores columnas tabla convocatorias
+	
+	public final static String valueIdConInfo = "idConvocatorias";
+	
+	/** The Constant valueIdUserInfo. */
+	public final static String valueIdUserInfo = "idUser";
 	
 	/** The Constant valueDescConv. */
-	//Valores columnas tabla convocatorias
 	public final static String valueDescConv = "descPresentacion";
 	
 	/** The Constant valueApertura. */
@@ -184,9 +195,11 @@ public class ConstantsDB {
 	
 	/** The Constant valuesIdMunPres. */
 	public final static String valuesIdMunPres = "idMunicipio";
+
 	
 	/** The Constant valuesIdUsuerPres. */
 	public final static String valuesIdUsuerPres = "idUser";
+	
 	
 	/** The Constant valuesCatMunPres. */
 	public final static String valuesCatMunPres = "catMunicipio";
