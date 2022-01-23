@@ -1,11 +1,12 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package util;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Strings constantes referentes a la pantalla de Información
+ * 
  * The Class ConstantsGestInformacion.
  */
 public class ConstantsGestInformacion {
@@ -31,7 +32,8 @@ public class ConstantsGestInformacion {
 	public final static String labelInfoPres = "Información Presentaciones";
 	
 	/** The Constant tableColumnsPres. */
-	public final static String tableColumnsPres[] = { "Muninicipio","Usuario","Cat. Mun.","Fecha Pres.","Estado","Nº Doc. Pres." };
+	//public final static String tableColumnsPres[] = { "Pres.","Conv.","Usuario","Mun.","Cat. Mun.","Fecha Pres.","Estado","Nº Doc. Pres." };
+	public final static String tableColumnsPres[] = { "Pres.","Conv.","Usuario","Fecha Pres.","Estado","Nº Doc. Pres." };
 	
 	
 	/** The Constant imgInformacion. */

@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -9,7 +9,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -26,10 +25,6 @@ import controlador.MunicipiosImplDAO;
 import util.ConstantsGestMunicipios;
 import util.ConstantsMessage;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AltaMunicipios.
- */
 
 /**
  * The Class AltaMunicipios.
@@ -59,9 +54,6 @@ public class AltaMunicipios extends JDialog {
 	//Llamada clase UsuariosImplDAO
 	private MunicipiosImplDAO mdao = new MunicipiosImplDAO();
 	
-	/** The i D usuarios. */
-	//Variable listar datos id usuario desde arraylist
-	private ArrayList<String> iDUsuarios = new ArrayList<String>();
 
 	/** The image OK. */
 	//Icono mensaje correcto
@@ -122,8 +114,9 @@ public class AltaMunicipios extends JDialog {
 		cbIdUsuario = new JComboBox<String>();
 		cbIdUsuario.setBounds(155, 137, 164, 27);
 		contentPanel.add(cbIdUsuario);
-		ArrayList<?> m = mdao.listaIdUsuariosMunicipios(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbIdUsuario.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		//ArrayList<?> m = mdao.listaIdUsuariosMunicipios(iDUsuarios); 
+		//pasamos el tipo de usuario desde la BBDD y listamos valores en cbIdUsuario
+		cbIdUsuario.setModel(new DefaultComboBoxModel<String>(mdao.listaIdUsuariosMunicipios().toArray(new String[0]))); 
 		
 		//Label tipoUsuario
 		lbTipoUsuario = new JLabel(ConstantsGestMunicipios.labelTipoUsuario);
@@ -213,9 +206,10 @@ public class AltaMunicipios extends JDialog {
 	}
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
-	//Método para reiniciar los campos seleccionados
 	public void restart() {
 		//Reiniciamos componentes
 		txIdUsuario.setText("");

@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -14,10 +14,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,21 +33,15 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import controlador.ConDB;
 import controlador.ConvImplDAO;
 import controlador.UsuariosImplDAO;
 import modelo.Convocatorias;
-import util.ConstantsDB;
 import util.ConstantsGestConvocatorias;
 import util.ConstantsGestMunicipios;
 import util.ConstantsMessage;
 import javax.swing.JCheckBox;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ModConvocatorias.
- */
+
 
 /**
  * The Class ModConvocatorias.
@@ -94,12 +84,13 @@ public class ModConvocatorias extends JDialog {
 	/** The table docs. */
 	private static JTable tableDocs;
 	
+	/** The image OK. */
+	//Icono mensaje correcto
+	ImageIcon imageOK = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgOK));
+	
 	/** The image error. */
 	//Variable ImageIcon
 	private ImageIcon imageError = new ImageIcon(AltaConvocatorias.class.getResource(ConstantsMessage.imgError));
-	
-	/** The i D usuarios. */
-	private ArrayList<String> iDUsuarios = new ArrayList<String>();
 	
 	/** The udao. */
 	private UsuariosImplDAO udao = new UsuariosImplDAO();
@@ -110,16 +101,6 @@ public class ModConvocatorias extends JDialog {
 	/** The cdao. */
 	//variable clase EventoImplDAO
 	private ConvImplDAO cdao = new ConvImplDAO();
-	
-	/** The st. */
-	//Variables BBDD
-	private Statement st;
-	
-	/** The rs. */
-	private ResultSet rs;
-	
-	/** The conn. */
-	private Connection conn;
 
 	/**
 	 * Instantiates a new mod convocatorias.
@@ -159,14 +140,14 @@ public class ModConvocatorias extends JDialog {
 		cbIdUser = new JComboBox<String>();
 		cbIdUser.setBounds(164, 60, 118, 27);
 		contentPanel.add(cbIdUser);
-		ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbIdUser.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		//pasamos el tipo de usuario desde la BBDD, listamos valores en cbIdUsuario
+		cbIdUser.setModel(new DefaultComboBoxModel<String>(udao.listaIdUserConv().toArray(new String[0]))); 
 		
 		//Listener combobox Id Convocatorias para actualizar los datos cuando se selecciona otro item distinto
 		cbIdUser.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				infoUsuario();
+				txIdUser.setText(cdao.infoUsuariosConv(cbIdUser.getSelectedItem().toString())); //actualizamos valores
 			}
 			
 		});
@@ -311,7 +292,8 @@ public class ModConvocatorias extends JDialog {
 			}
 		}
 		
-		infoUsuario();
+		//instanciamos método infoUsuariosConv() desde la clase ConvImplDAO
+		txIdUser.setText(cdao.infoUsuariosConv(cbIdUser.getSelectedItem().toString()));
 	}
 	
 	/**
@@ -395,6 +377,10 @@ public class ModConvocatorias extends JDialog {
 						
 						dispose(); //cierra pantalla
 						restart(); //reinicia campos
+						
+						//Mensaje operación OK
+						JOptionPane.showMessageDialog(null,ConstantsMessage.msg30,ConstantsMessage.msg8,
+								JOptionPane.PLAIN_MESSAGE,imageOK);
 					}
 	
 					
@@ -462,39 +448,14 @@ public class ModConvocatorias extends JDialog {
 		
 	}
 	
-	/**
-	 * Info usuario.
-	 */
-	//Método para obtener los usuarios asociados a las convocatorias
-	private void infoUsuario() {
-		String idConv = cbIdUser.getSelectedItem().toString();
-		try {
-			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-			st = conn.createStatement();
-			
-			String queryInfoUsuarioConv = "SELECT tipoUsuario "
-										   + "FROM usuarios "
-										   + "WHERE idUsuario = '"+idConv+"' ";
-			
-			rs = st.executeQuery(queryInfoUsuarioConv);
-			
-			
-			while(rs.next()) {
-				txIdUser.setText(rs.getString(ConstantsDB.valueTipo));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	};
-	
 	
 	/**
+	 * Método para devolver un valor boolean a la columna estado en la BBDD y evitar problemas de conversión 
+	 * 
 	 * Tipo estado DB.
 	 *
 	 * @return true, if successful
 	 */
-	//Cambiamos el tipo de valor booleano en función del tipo elemento seleccionado en el comboBox jComboTipo
 	private boolean tipoEstadoDB() {
 		if(checkAbierto.isSelected()==false) {
 			return false;
@@ -503,11 +464,12 @@ public class ModConvocatorias extends JDialog {
 	}
 	
 	/**
+	 * Devuelve un tipo numérico a la tabla en lugar de false o true
+	 * 
 	 * Tipo estado tabla.
 	 *
 	 * @return the int
 	 */
-	//Cambiamos el tipo de estado a numérico para añadirlo a la tabla de GestConvocatorias
 	public int tipoEstadoTabla() {
 			if(checkAbierto.isSelected()==false) {
 				return 0;
@@ -515,8 +477,10 @@ public class ModConvocatorias extends JDialog {
 			return 1;
 	}
 	
-	//Conseguimos los valores desde GestConvocatorias para mostrarlos inicialmente en esta pantalla
 	/**
+	 * 
+	 * Obtenemos los valores de la tabla de GestConvocatorias
+	 * 
 	 * Gets the row convocatoria.
 	 *
 	 * @param idConv  the id conv
@@ -526,6 +490,7 @@ public class ModConvocatorias extends JDialog {
 	 * @param fFin    the f fin
 	 * @param estado  the estado
 	 * @param docs    the docs
+	 * @return the row convocatoria
 	 */
 	//public static void getRowConvocatoria(String id,String desc,String fInicio,String fFin,String estado,ArrayList<String> docs) {
 	public static void getRowConvocatoria(String idConv,String idUser,String desc,String fInicio,String fFin,
@@ -555,11 +520,12 @@ public class ModConvocatorias extends JDialog {
 	
 
 	/**
+	 * Cambiamos formato del valor de la fecha para añadirlo en BBDD y evitar problemas de conversión
+	 * 
 	 * Change date start.
 	 *
 	 * @return the string
 	 */
-	//Cambiar formato fecha inicio
 	public String changeDateStart() {
 		SimpleDateFormat fromUser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -576,11 +542,12 @@ public class ModConvocatorias extends JDialog {
 	}
 	
 	/**
+	 * Cambiamos formato del valor de la fecha para añadirlo en BBDD y evitar problemas de conversión
+	 * 
 	 * Change date end.
 	 *
 	 * @return the string
 	 */
-	//Cambiar formato fecha cierre
 	public String changeDateEnd() {
 		SimpleDateFormat fromUser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -599,9 +566,10 @@ public class ModConvocatorias extends JDialog {
 	
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
-	//Método para limpiar campos una vez modificada la convocatoria
 	public void restart() {
 		//Reiniciamos componentes
 		txIdConvocatoria.setText("");

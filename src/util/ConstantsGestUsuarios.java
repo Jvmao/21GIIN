@@ -1,11 +1,12 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package util;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Strings constantes referentes a las pantallas de usuarios
+ * 
  * The Class ConstantsGestUsuarios.
  */
 public class ConstantsGestUsuarios {

@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package modelo;
@@ -8,8 +8,9 @@ import java.util.List;
 
 
 
-// TODO: Auto-generated Javadoc
 /**
+ * Objeto Usuarios
+ * 
  * The Class Usuarios.
  */
 public class Usuarios{
@@ -26,7 +27,6 @@ public class Usuarios{
 	/**
 	 * Instantiates a new usuarios.
 	 */
-	//Constructor vacío
 	public Usuarios() {
 		
 	}
@@ -38,7 +38,6 @@ public class Usuarios{
 	 * @param passUsuario the pass usuario
 	 * @param tipoUsuario the tipo usuario
 	 */
-	//Constructor
 	public Usuarios(String idUsuario, String passUsuario, List<Object> tipoUsuario) {
 		super();
 		this.idUsuario = idUsuario;
@@ -46,12 +45,12 @@ public class Usuarios{
 		this.tipoUsuario = tipoUsuario;
 	}
 
+	//Getters and setters
 	/**
 	 * Gets the id usuario.
 	 *
 	 * @return the id usuario
 	 */
-	//Getters and setters
 	public String getIdUsuario() {
 		return idUsuario;
 	}

@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -9,7 +9,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -26,10 +25,7 @@ import controlador.MunicipiosImplDAO;
 import util.ConstantsGestMunicipios;
 import util.ConstantsMessage;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ModMunicipios.
- */
+
 
 /**
  * The Class ModMunicipios.
@@ -66,9 +62,6 @@ public class ModMunicipios extends JDialog {
 	//Recurso imagen
 	ImageIcon imageError = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgError));
 
-	/** The i D usuarios. */
-	//Variable listar datos id usuario desde arraylist
-	private ArrayList<String> iDUsuarios = new ArrayList<String>();
 	
 
 	/**
@@ -121,8 +114,9 @@ public class ModMunicipios extends JDialog {
 		cbIdUser = new JComboBox<String>();
 		cbIdUser.setBounds(132, 147, 193, 27);
 		contentPanel.add(cbIdUser);
-		ArrayList<?> m = mdao.listaIdUsuariosMunicipios(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbIdUser.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUser
+		//ArrayList<?> m = mdao.listaIdUsuariosMunicipios(iDUsuarios); 
+		//pasamos el tipo de usuario desde la BBDD y listamos valores en cbIdUser
+		cbIdUser.setModel(new DefaultComboBoxModel<String>(mdao.listaIdUsuariosMunicipios().toArray(new String[0]))); 
 		
 		//Label tipoUsuario
 		lbTipoUsuario = new JLabel(ConstantsGestMunicipios.labelTipoUsuario);
@@ -160,7 +154,6 @@ public class ModMunicipios extends JDialog {
 	/**
 	 * The Class InnerActionModMunicipios.
 	 */
-	//ActionListener Botones
 	public class InnerActionModMunicipios implements ActionListener{
 
 		/**
@@ -206,14 +199,16 @@ public class ModMunicipios extends JDialog {
 		
 	}
 	
-	//Obtenemos los valores seleccionados en la Tabla de GestUsuarios 
 	/**
+	 * Obtenemos los valores de la tabla de GestMunicipios
+	 * 
 	 * Gets the row municipios.
 	 *
 	 * @param id        the id
 	 * @param categoria the categoria
 	 * @param iduser    the iduser
 	 * @param tipo      the tipo
+	 * @return the row municipios
 	 */
 	//para mostrarlos inicialmente en esta pantalla
 	public static void getRowMunicipios(String id,int categoria,String iduser,String tipo) {

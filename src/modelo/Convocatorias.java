@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package modelo;
@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import controlador.ControlaFechas;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Objeto Convocatorias
+ * 
  * The Class Convocatorias.
  */
 public class Convocatorias extends Evento implements ControlaFechas{
 	
 	/** The id usuario. */
-	//Atributos
 	private String idUsuario;
 	
 	/** The estado apertura. */
@@ -29,26 +29,24 @@ public class Convocatorias extends Evento implements ControlaFechas{
 	/**
 	 * Instantiates a new convocatorias.
 	 */
-	//Constructor Vacío
 	public Convocatorias() {}
 	
 	/**
 	 * Instantiates a new convocatorias.
 	 *
-	 * @param idConvocatorias  the id convocatorias
-	 * @param descPresentacion the desc presentacion
+	 * @param idEvento         the id evento
+	 * @param descEvento       the desc evento
 	 * @param fechaApertura    the fecha apertura
 	 * @param fechaCierre      the fecha cierre
 	 * @param idUsuario        the id usuario
 	 * @param estadoApertura   the estado apertura
 	 * @param docsConvocatoria the docs convocatoria
 	 */
-	//Constructor
-	public Convocatorias(String idConvocatorias, String descPresentacion, Date fechaApertura, Date fechaCierre,
+	public Convocatorias(String idEvento, String descEvento, Date fechaApertura, Date fechaCierre,
 						 String idUsuario,Boolean estadoApertura, ArrayList<String> docsConvocatoria) 
 	
 	{
-		super(idConvocatorias,descPresentacion,fechaApertura,fechaCierre);
+		super(idEvento,descEvento,fechaApertura,fechaCierre);
 		this.idUsuario = idUsuario;
 		this.estadoApertura = estadoApertura;
 		this.documentosSolicitados = docsConvocatoria;
@@ -124,13 +122,14 @@ public class Convocatorias extends Evento implements ControlaFechas{
 	}
 
 	/**
+	 * Método para comprobar que una fecha de fin no sea menor a la fecha de inicio
+	 * 
 	 * Comprueba fecha.
 	 *
 	 * @param fechaUno the fecha uno
 	 * @param fechaDos the fecha dos
 	 * @return true, if successful
 	 */
-	//Métodos implementados desde interface ControlaFechas
 	@Override
 	public boolean compruebaFecha(String fechaUno, String fechaDos) { //comprobamos que la fecha dos no sea mayor a la fecha uno
 		SimpleDateFormat formatDates = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -154,13 +153,15 @@ public class Convocatorias extends Evento implements ControlaFechas{
 
 
 	/**
+	 * Comprobamos que la fecha sigue el formato dd/MM/yyyy HH:mm
+	 * 
 	 * Valida fecha.
 	 *
 	 * @param fecha the fecha
 	 * @return true, if successful
 	 */
 	@Override
-	public boolean validaFecha(String fecha) { //validamos que la fecha introducida sigue el siguiente formato
+	public boolean validaFecha(String fecha) { 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         format.setLenient(false);
         

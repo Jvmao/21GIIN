@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 
@@ -9,12 +9,11 @@ import javax.swing.JFrame;
 
 import vista.Login;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Start.
- */
+
 
 /**
+ * Clase principal para iniciar la aplicación
+ * 
  * The Class Start.
  */
 

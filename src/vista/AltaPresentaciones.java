@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -14,12 +14,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,16 +33,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import controlador.ConDB;
 import controlador.ConvImplDAO;
 import controlador.PresentacionImplDAO;
 import controlador.UsuariosImplDAO;
 import modelo.Presentaciones;
-import util.ConstantsDB;
 import util.ConstantsGestPresentaciones;
 import util.ConstantsMessage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AltaPresentaciones.
  */
@@ -83,16 +76,14 @@ public class AltaPresentaciones extends JDialog {
 	/** The table docs. */
 	private JTable tableDocs;
 	
+	/** The image OK. */
+	//Icono mensaje correcto
+	ImageIcon imageOK = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgOK));
+	
 	/** The image error. */
 	//Imagen Error Mensaje
 	private ImageIcon imageError = new ImageIcon(GestPresentaciones.class.getResource(ConstantsMessage.imgError));
 	
-	/** The i D usuarios. */
-	//Variable listar datos id usuario desde arraylist
-	private ArrayList<String> iDUsuarios = new ArrayList<String>();
-	
-	/** The i D conv. */
-	private ArrayList<String> iDConv = new ArrayList<String>();
 	
 	/** The udao. */
 	//Llamada clase UsuariosImplDAO
@@ -107,16 +98,6 @@ public class AltaPresentaciones extends JDialog {
 	/** The cdao. */
 	//Llamada clase EventoImplDAO
 	private ConvImplDAO cdao = new ConvImplDAO();
-	
-	/** The st. */
-	//Variables BBDD
-	private Statement st;
-	
-	/** The rs. */
-	private ResultSet rs;
-	
-	/** The conn. */
-	private Connection conn;
 	
 	/** The p. */
 	private Presentaciones p = new Presentaciones();
@@ -153,14 +134,17 @@ public class AltaPresentaciones extends JDialog {
 		cbIDConv = new JComboBox<String>();
 		getContentPane().add(cbIDConv);
 		cbIDConv.setBounds(6, 53, 145, 27);
-		ArrayList<?> s = cdao.listaIDConvocatoria(iDConv); //pasamos el id de convocatorias desde la BBDD
-		cbIDConv.setModel(new DefaultComboBoxModel<String>(s.toArray(new String[0]))); //listamos valores en cbIDConv
+		//ArrayList<?> s = cdao.listaIDConvocatoria(iDConv); 
+		//pasamos el id de convocatorias desde la BBDD y listamos valores en cbIDConv
+		cbIDConv.setModel(new DefaultComboBoxModel<String>(cdao.listaIDConvocatoria().toArray(new String[0]))); 
 		
 		//Listener combobox Id Convocatorias para actualizar los datos cuando se selecciona otro item distinto
 		cbIDConv.addActionListener(new ActionListener () {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fechasConvocatoria();
+				//fechasConvocatoria();
+				txInicioConv.setText(pdao.fechasConvInicio(cbIDConv.getSelectedItem().toString()));
+				txFinConv.setText(pdao.fechaConvFin(cbIDConv.getSelectedItem().toString()));
 			}
 			
 		});
@@ -210,14 +194,15 @@ public class AltaPresentaciones extends JDialog {
 		cbIdUsuario = new JComboBox<String>();
 		getContentPane().add(cbIdUsuario);
 		cbIdUsuario.setBounds(161, 87, 130, 27);
-		ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbIdUsuario.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		//ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
+		cbIdUsuario.setModel(new DefaultComboBoxModel<String>(udao.listaIdUserConv().toArray(new String[0]))); //listamos valores en cbIdUsuario
 		
 		//Listener combobox Id Convocatorias para actualizar los datos cuando se selecciona otro item distinto
 		cbIdUsuario.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				infoUsuariosPres();
+				//infoUsuariosPres();
+				txTipoUsuario.setText(cdao.infoUsuariosConv(cbIdUsuario.getSelectedItem().toString())); 
 			}
 			
 		});
@@ -353,9 +338,13 @@ public class AltaPresentaciones extends JDialog {
 			}
 		}
 		
-		//Añadimos los métodos siguientes
-		fechasConvocatoria();
-		infoUsuariosPres();
+		//Añadimos los métodos desde PresentacionesImlDAO
+		txInicioConv.setText(pdao.fechasConvInicio(cbIDConv.getSelectedItem().toString()));
+		txFinConv.setText(pdao.fechaConvFin(cbIDConv.getSelectedItem().toString()));
+
+		
+		//instanciamos método infoUsuariosPres() desde la clase PresentacionImlDAO
+		txTipoUsuario.setText(cdao.infoUsuariosConv(cbIdUsuario.getSelectedItem().toString())); 
 
 	}
 	
@@ -442,6 +431,10 @@ public class AltaPresentaciones extends JDialog {
 					
 					dispose(); //Cerramos Ventana
 					restart(); //reinicia campos
+					
+					//Mensaje operación OK
+					JOptionPane.showMessageDialog(null,ConstantsMessage.msg29,ConstantsMessage.msg8,
+							JOptionPane.PLAIN_MESSAGE,imageOK);
 				}
 				
 			}
@@ -468,7 +461,7 @@ public class AltaPresentaciones extends JDialog {
 		@Override
 		public void keyTyped(KeyEvent e) {
 			if(e.getSource() == txFechaPres) {
-				//El campo passField solo admite 16 caracteres como máximo (01/01/2022 09:00) = 16 carácteres
+				//El campo txFechaPres solo admite 16 caracteres como máximo (01/01/2022 09:00) = 16 carácteres
 				if(txFechaPres.getText().length() == 16) e.consume();
 			}
 
@@ -499,69 +492,13 @@ public class AltaPresentaciones extends JDialog {
 		
 	}
 	
-	/**
-	 * Fechas convocatoria.
-	 */
-	//Obtenemos las fechas de inicio y cierre de la convocaotira seleccionada mediante una consulta en la BBDD
-	private void fechasConvocatoria() {
-		String idConv = cbIDConv.getSelectedItem().toString();
-		
-		
-		try {
-			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-			st = conn.createStatement();
-			
-			String queryFechasConvocatoria = "SELECT fechaApertura,fechaCierre "
-										   + "FROM convocatorias "
-										   + "WHERE idConvocatorias = '"+idConv+"'";
-			
-			rs = st.executeQuery(queryFechasConvocatoria);
-			
-			//Cambiamos formato fecha de BBDD
-			SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			
-			while(rs.next()) {
-				txInicioConv.setText(myFormat.format(fromUser.parse(rs.getString(ConstantsDB.valueFechaApertura))));
-				txFinConv.setText(myFormat.format(fromUser.parse(rs.getString(ConstantsDB.valueFechaCierre))));
-			}
-			
-		} catch (SQLException | ParseException e) {
-			e.printStackTrace();
-		}
-	};
+
 	
 	/**
-	 * Info usuarios pres.
-	 */
-	//Método para obtener los usuarios asociados a las convocatorias desde la consulta a la BBDD
-	private void infoUsuariosPres() {
-		String idConv = cbIdUsuario.getSelectedItem().toString();
-		try {
-			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-			st = conn.createStatement();
-			
-			String queryInfoUsuarioConv = "SELECT tipoUsuario "
-										   + "FROM usuarios "
-										   + "WHERE idUsuario = '"+idConv+"' ";
-			
-			rs = st.executeQuery(queryInfoUsuarioConv);
-			
-			
-			while(rs.next()) {
-				txTipoUsuario.setText(rs.getString(ConstantsDB.valueTipo));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	};
-	
-	
-	/**
+	 * Convertimos la fecha a mostrar al formato dd/MM/yyyy HH:mm
+	 * 
 	 * To time stamp.
 	 */
-	//Método para convertir la fecha del sistema a timestamp
 	private void toTimeStamp() {
 		// obtenemos la fecha del sistema
         Date date = new Date();
@@ -574,11 +511,12 @@ public class AltaPresentaciones extends JDialog {
 	}
 	
 	/**
+	 * Método para devolver un valor boolean a la columna estado en la BBDD y evitar problemas de conversión 
+	 * 
 	 * Tipo estado DB.
 	 *
 	 * @return true, if successful
 	 */
-	//Cambiamos el tipo de valor booleano en función del tipo elemento seleccionado en el comboBox jComboTipo
 	private boolean tipoEstadoDB() {
 		if(checkAbierto.isSelected()==false) {
 			return false;
@@ -587,11 +525,12 @@ public class AltaPresentaciones extends JDialog {
 	}
 	
 	/**
+	 * Devuelve un tipo numérico a la tabla en lugar de false o true
+	 * 
 	 * Tipo estado tabla.
 	 *
 	 * @return the int
 	 */
-	//Cambiamos el tipo de estado a numérico para añadirlo a la tabla de GestConvocatorias
 	public int tipoEstadoTabla() {
 			if(checkAbierto.isSelected()==false) {
 				return 0;
@@ -601,9 +540,10 @@ public class AltaPresentaciones extends JDialog {
 
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
-	//Método para limpiar campos una vez dada de alta una nueva convocatoria
 	public void restart() {
 		//Reiniciamos componentes
 		toTimeStamp();
@@ -611,7 +551,7 @@ public class AltaPresentaciones extends JDialog {
 		checkCerrado.setSelected(false);
 		
 		
-		//Limpiamos la tabla de todas las filas que puedan haber
+		//Limpiamos la tabla de todas las filas que pueda contener
 		int rowsToRemove = modelDocs.getRowCount();
         for (int i = rowsToRemove - 1; i >= 0; i--) {
         	modelDocs.removeRow(i);

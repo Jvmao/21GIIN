@@ -1,12 +1,13 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package util;
 
 
-// TODO: Auto-generated Javadoc
 /**
+ * Strings constantes referentes a las consultas en BBDD
+ * 
  * The Class ConstantsDB.
  */
 public class ConstantsDB {
@@ -66,7 +67,9 @@ public class ConstantsDB {
 	public final static String valueTipoUsuarioMunicipio = "tipoUsuario";
 	
 	/** The Constant queryListaIdUsuariosMunicipios. */
-	public final static String queryListaIdUsuariosMunicipios = "SELECT idUsuario FROM usuarios WHERE tipoUsuario = 'Cuentadante'";
+	public final static String queryListaIdUsuariosMunicipios = "SELECT idUsuario "
+																+ "FROM usuarios "
+																+ "WHERE tipoUsuario = 'Cuentadante'";
 	
 	/** The Constant queryListaMunicipios. */
 	//Consulta para listar todos los usuarios en GestUsuarios
@@ -75,7 +78,7 @@ public class ConstantsDB {
 													+ "catMunicipio,"
 													+ "idUser,"
 													+ "tipoUsuario "
-													+ "FROM municipios ORDER BY 1,2";
+													+ "FROM municipios ORDER BY 1,2,3";
 	
 	/** The Constant valueIDConvocatorias. */
 	//Valores columnas tabla convocatorias
@@ -156,7 +159,7 @@ public class ConstantsDB {
 															 + "FROM convocatorias ORDER BY 1,2";
 	
 	/** The Constant queryListaIdUserConv. */
-	public final static String queryListaIdUserConv = "SELECT idUsuario FROM usuarios WHERE tipoUsuario IN ('Cuentadante','Fiscal')";
+	public final static String queryListaIdUserConv = "SELECT idUsuario FROM usuarios WHERE tipoUsuario IN ('Cuentadante')";
 	
 	/** The Constant valueIdConInfo. */
 	//Valores columnas tabla convocatorias
@@ -182,24 +185,40 @@ public class ConstantsDB {
 	/** The Constant queryListaEstadoPresentaciones. */
 	
 	//Listar presentaciones por usuario en la pantalla de información
-	public final static String queryListaEstadoPresentaciones = "SELECT "
+	/**public final static String queryListaEstadoPresentaciones = "SELECT "
+															  + "p.idPres,"
+															  + "p.idConv,"
+															  + "p.idUser,"
 															  + "m.idMunicipio,"
-															  + "m.idUser,"
 															  + "m.catMunicipio,"
 															  + "p.fecha,"
 															  + "p.estado,"
 															  + "p.docs "
 															  + "FROM presentaciones p "
 															  + "JOIN municipios m "
-															  + "ON p.idUser=m.idUser ORDER BY 3";
+															  + "ON p.idUser=m.idUser ORDER BY 1,2,3";**/
 	
-	/** The Constant valuesIdMunPres. */
-	public final static String valuesIdMunPres = "idMunicipio";
-
+	//Listar presentaciones por usuario en la pantalla de información
+	public final static String queryListaEstadoPresentaciones = "SELECT "
+																  + "idPres,"
+																  + "idConv,"
+																  + "idUser,"
+																  + "fecha,"
+																  + "estado,"
+																  + "docs "
+																  + "FROM presentaciones ORDER BY 1,2,3";
+	
+	/** The Constant valuesIdPres. */
+	public final static String valuesIdPres = "idPres";
+	
+	/** The Constant valuesIdConvPres. */
+	public final static String valuesIdConvPres="idConv";
 	
 	/** The Constant valuesIdUsuerPres. */
 	public final static String valuesIdUsuerPres = "idUser";
 	
+	/** The Constant valuesIdMunPres. */
+	public final static String valuesIdMunPres = "idMunicipio";
 	
 	/** The Constant valuesCatMunPres. */
 	public final static String valuesCatMunPres = "catMunicipio";

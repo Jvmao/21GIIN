@@ -1,11 +1,12 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package util;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Strings constantes referentes a la pantalla de Login
+ * 
  * The Class ConstantsLogin.
  */
 public class ConstantsLogin {

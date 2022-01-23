@@ -1,30 +1,28 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface ConvDAO.
  */
 
-/**
- * The Interface EventoDAO.
- */
+
 public interface ConvDAO {
 	
 	/**
 	 * Lista ID convocatoria.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaIDConvocatoria(ArrayList<String> c);
+	public ArrayList<String> listaIDConvocatoria();
 	
 	/**
+	 * Añade nuevo evento en la BBDD
+	 * 
 	 * Adds the evento.
 	 *
 	 * @param idConv        the id conv
@@ -39,6 +37,8 @@ public interface ConvDAO {
 						  Boolean estado,ArrayList<String> docs);
 	
 	/**
+	 * Modifica un evento seleccionado en la BBDD
+	 * 
 	 * Mod evento.
 	 *
 	 * @param idConv        the id conv
@@ -53,11 +53,23 @@ public interface ConvDAO {
 						  Boolean estado,ArrayList<String> docs);
 	
 	/**
+	 * Elimina un evento seleccionado en la BBDD
+	 * 
 	 * Del evento.
 	 *
 	 * @param idConv the id conv
 	 */
 	public void delEvento(String idConv);
+	
+	/**
+	 * ID usuarios convocatoria
+	 * 
+	 * Info usuarios conv.
+	 *
+	 * @param idConv the id conv
+	 * @return the string
+	 */
+	public String infoUsuariosConv(String idConv);
 
 
 }

@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.util.*;
 import util.ConstantsDB;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ConvImplDAO.
  */
@@ -33,12 +32,14 @@ public class ConvImplDAO implements ConvDAO{
 	private PreparedStatement pst;
 	
 	/**
+	 * Listamos ID usuarios convocatoria
+	 * 
 	 * Lista ID convocatoria.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaIDConvocatoria(ArrayList<String> c){
+	public ArrayList<String> listaIDConvocatoria(){
+		ArrayList<String> c = new ArrayList<String>();
 		try {
 			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
@@ -61,6 +62,8 @@ public class ConvImplDAO implements ConvDAO{
 	
 
 	/**
+	 * Añade nuevo evento en la BBDD
+	 * 
 	 * Adds the evento.
 	 *
 	 * @param idConv        the id conv
@@ -81,19 +84,12 @@ public class ConvImplDAO implements ConvDAO{
 			
 			if(conn != null) {
 				st = conn.createStatement();
-				/**String insertarEvento = "INSERT INTO convocatorias "
+				String insertarEvento = "INSERT INTO convocatorias "
 										+ "(idConvocatorias,idUser,descPresentacion,fechaApertura,fechaCierre,estadoApertura,docsPresentados) "
 										+ "VALUES ('"+idConv+"','"+idUser+"','"+desc+"',"
 												+ "CONVERT(DATETIME, '"+fechaApertura+"',103),"
 												+ "CONVERT(DATETIME, '"+fechaCierre+"',103),"
-											    + "CAST('"+estado+"' AS BIT),'"+docs+"')";**/
-				//Postgresql
-				String insertarEvento = "INSERT INTO convocatorias "
-						+ "(idConvocatorias,idUser,descPresentacion,fechaApertura,fechaCierre,estadoApertura,docsPresentados) "
-						+ "VALUES ('"+idConv+"','"+idUser+"','"+desc+"',"
-								+ "TO_TIMESTAMP('"+fechaApertura+"','DD/MM/YYYY'),"
-								+ "TO_TIMESTAMP('"+fechaCierre+"','DD/MM/YYYY'),"
-							    + "CAST('"+estado+"' AS BIT),'"+docs+"')";
+											    + "CAST('"+estado+"' AS BIT),'"+docs+"')";
 				
 				pst = conn.prepareStatement(insertarEvento);
 				pst.executeUpdate();
@@ -111,6 +107,8 @@ public class ConvImplDAO implements ConvDAO{
 	}
 
 	/**
+	 * Modifica un evento seleccionado en la BBDD
+	 * 
 	 * Mod evento.
 	 *
 	 * @param idConv        the id conv
@@ -132,7 +130,7 @@ public class ConvImplDAO implements ConvDAO{
 			if(conn != null) {
 				st = conn.createStatement();
 
-				/**String updateEvento = "UPDATE convocatorias "+
+				String updateEvento = "UPDATE convocatorias "+
 	                      			  "SET idConvocatorias = ?"+
 	                      			  ",idUser = ?"+
 	                      			  ",descPresentacion = ?"+
@@ -140,18 +138,8 @@ public class ConvImplDAO implements ConvDAO{
 	                      			  ",fechaCierre = CONVERT(DATETIME,?,103)"+
 	                      			  ",estadoApertura = CAST(? AS BIT)"+
 	                      			  ",docsPresentados = ?"+
-	                      			  " WHERE idConvocatorias = '"+idConv+"'";**/
-				
-				//Postgresql
-				String updateEvento = "UPDATE convocatorias "+
-            			  "SET idConvocatorias = ?"+
-            			  ",idUser = ?"+
-            			  ",descPresentacion = ?"+
-            			  ",fechaApertura = TO_TIMESTAMP(DATETIME,?,DD/MM/YYYY)"+
-            			  ",fechaCierre = TO_TIMESTAMP(DATETIME,?,DD/MM/YYYY)"+
-            			  ",estadoApertura = CAST(? AS BIT)"+
-            			  ",docsPresentados = ?"+
-            			  " WHERE idConvocatorias = '"+idConv+"'";
+	                      			  " WHERE idConvocatorias = '"+idConv+"'";
+
 
 				pst = conn.prepareStatement(updateEvento);
 				pst.setString(1, idConv);
@@ -184,6 +172,8 @@ public class ConvImplDAO implements ConvDAO{
 	
 
 	/**
+	 * Elimina un evento seleccionado en la BBDD
+	 * 
 	 * Del evento.
 	 *
 	 * @param idConv the id conv
@@ -197,13 +187,10 @@ public class ConvImplDAO implements ConvDAO{
 			if(conn != null) {
 				st = conn.createStatement();
 				
-				/**String eliminarConvocatoria = "DELETE "
-								  			 +"FROM convocatorias "
-								             +"WHERE idConvocatorias = '"+idConv+"'";**/
-				//Postgresql
 				String eliminarConvocatoria = "DELETE "
-			  			 +"FROM convocatorias "
-			             +"WHERE idConvocatorias = '"+idConv+"'";
+								  			 +"FROM convocatorias "
+								             +"WHERE idConvocatorias = '"+idConv+"'";
+
 				
 				pst = conn.prepareStatement(eliminarConvocatoria);
 				pst.executeUpdate();
@@ -215,6 +202,38 @@ public class ConvImplDAO implements ConvDAO{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	/**
+	 * Info usuarios conv.
+	 *
+	 * @param idConv the id conv
+	 * @return the string
+	 */
+	//Método para obtener los usuarios asociados a las convocatorias desde la consulta a la BBDD
+	@Override
+	public String infoUsuariosConv(String idConv) {
+		String tipo = null;
+		try {
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			st = conn.createStatement();
+			
+			String queryInfoUsuarioConv = "SELECT tipoUsuario "
+										   + "FROM usuarios "
+										   + "WHERE idUsuario = '"+idConv+"' ";
+			
+			rs = st.executeQuery(queryInfoUsuarioConv);
+			
+			while(rs.next()) {
+				tipo = rs.getString(ConstantsDB.valueTipo);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tipo;
+		
 	}
 	
 

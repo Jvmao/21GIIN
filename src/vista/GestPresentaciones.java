@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -214,15 +214,15 @@ public class GestPresentaciones extends JPanel {
 	}
 	
 	/**
+	 * Mostramos en la tabla los datos de las presentaciones almacenadas en BBDD
+	 * 
 	 * Populate presentacion data.
 	 *
 	 * @throws ParseException the parse exception
 	 */
-	//mostramos los datos de la BBDD de la tabla presentaciones en la tabla
 	private void populatePresentacionData() throws ParseException {
 		try {
 			//Conexión a la BBDD
-			//conn = DriverManager.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			//Consulta a BBDD
@@ -256,21 +256,23 @@ public class GestPresentaciones extends JPanel {
 	
 	
 	/**
+	 * Conseguimos el id y el tipo de usuario desde la vista MenuPrincipal
+	 * 
 	 * Sets the valores usuario.
 	 *
 	 * @param id     the id
 	 * @param nombre the nombre
 	 */
-	//Recogemos el valor de ID y Tipo de Usuario desde la clase de MenuPrincipal
 	public void setValoresUsuario (String id,String nombre){
 			txIDUsuario.setText(id);
 			txTipoUsuario.setText(nombre);
 	}
 	
 	/**
+	 * Mostramos el campo con el formato dd/MM/yyyy
+	 * 
 	 * To time stamp.
 	 */
-	//Método para convertir la fecha del sistema a timestamp
 	private void toTimeStamp() {
 		// obtenemos la fecha del sistema
         Date date = new Date();
@@ -306,7 +308,7 @@ public class GestPresentaciones extends JPanel {
 				//Comprobamos si se ha seleccionado alguna fila cuando se elimina un usuario.
 				if(tablePres.getSelectionModel().isSelectionEmpty()==true ) {
 					//Si no selecciona una fila de la tabla y presiona el botón btnMod se muestra el siguiente mensaje
-					JOptionPane.showMessageDialog(null,ConstantsMessage.msg14,ConstantsMessage.msg0,
+					JOptionPane.showMessageDialog(null,ConstantsMessage.msg20,ConstantsMessage.msg0,
 							  JOptionPane.PLAIN_MESSAGE,imageError);
 				}else {
 					mp.setVisible(true); //Abrimos la pantalla ModPresentaciones
@@ -355,19 +357,22 @@ public class GestPresentaciones extends JPanel {
 	
 	
 	/**
+	 * Añadimos nueva fila cuando se añade una nueva presentación desde AltaPresentaciones
+	 * 
 	 * Adds the row pres.
 	 *
 	 * @param dataRow the data row
 	 */
-	//Añadimos una nueva fila en la tabla de convocatorias cuando la damos de alta desde la pantalla AltaConvocatorias.
 	public static void addRowPres (Object[] dataRow) {
 		DefaultTableModel model = (DefaultTableModel) tablePres.getModel();
-		model.addRow(dataRow); //Añadimos fila en la tabla de un nuevo Municipio creado en AltaMunicipios
+		model.addRow(dataRow); //Añadimos fila en la tabla de un nuevo Municipio creado en AltaPresentaciones
 		
 	}
 	
 	/**
-	 * Sets the row convocatorias.
+	 * Recoge los elementos seleccionados de la tabla para mostrarlos en la pantalla de ModPresentaciones
+	 * 
+	 * Sets the row presentaciones.
 	 *
 	 * @param idPres the id pres
 	 * @param idConv the id conv
@@ -376,8 +381,7 @@ public class GestPresentaciones extends JPanel {
 	 * @param estado the estado
 	 * @param docs   the docs
 	 */
-	//Recogemos los valores desde ModConvocatorias y lo actualizamos en la tabla jTableConvocatorias de esta clase
-	public static void setRowConvocatorias(String idPres,String idConv,String idUser,String fecha,int estado,String docs) {
+	public static void setRowPresentaciones(String idPres,String idConv,String idUser,String fecha,int estado,String docs) {
 		DefaultTableModel model = (DefaultTableModel) tablePres.getModel();
 		int i = tablePres.getSelectedRow();
 		model.setValueAt(idPres,i, 0);     //Actualizamos valor id presentación
@@ -391,11 +395,12 @@ public class GestPresentaciones extends JPanel {
 	
 	
 	/**
+	 * Controla componentes en función del usuario conectado
+	 * 
 	 * Control gest presentaciones.
 	 *
 	 * @param tipoUsuario the tipo usuario
 	 */
-	//Método para controlar las acciones que pueden llevar a cabo los diferentes usuarios en GestConvocatorias
 	public void controlGestPresentaciones(String tipoUsuario) {
 		tipoUsuario = txTipoUsuario.getText().toString();
 		

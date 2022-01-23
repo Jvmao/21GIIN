@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -27,10 +26,6 @@ import util.ConstantsGestUsuarios;
 import util.ConstantsMessage;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ModUsuarios.
- */
 
 /**
  * The Class ModUsuarios.
@@ -69,8 +64,6 @@ public class ModUsuarios extends JDialog {
 	//Icono mensaje incorrecto
 	ImageIcon imageError = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgError));
 	
-	/** The s. */
-	private ArrayList<String> s = new ArrayList<String>();
 	
 
 	/**
@@ -112,8 +105,9 @@ public class ModUsuarios extends JDialog {
 		cbTipoUsuario = new JComboBox<String>();
 		cbTipoUsuario.setBounds(138, 103, 185, 27);
 		contentPanel.add(cbTipoUsuario);
-		ArrayList<?> m = udao.listaTipoUsuarios(s); //pasamos el tipo de usuario desde la BBDD
-		cbTipoUsuario.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0])));
+		//List<?> m = udao.listaTipoUsuarios(s); 
+		//pasamos el tipo de usuario desde la BBDD
+		cbTipoUsuario.setModel(new DefaultComboBoxModel<String>(udao.listaTipoUsuarios().toArray(new String[0])));
 		
 		//Label password
 		lbPass = new JLabel(ConstantsGestUsuarios.labelPassUsuario);
@@ -157,7 +151,7 @@ public class ModUsuarios extends JDialog {
 	/**
 	 * The Class InnerActionModUsuaios.
 	 */
-	//ActionListener Botones
+
 	public class InnerActionModUsuaios implements ActionListener{
 
 		/**
@@ -201,14 +195,15 @@ public class ModUsuarios extends JDialog {
 	}
 
 	/**
+	 * Obtnemos valores de la tabla de GestUsuarios
+	 * 
 	 * Gets the row usuarios.
 	 *
 	 * @param id   the id
 	 * @param tipo the tipo
 	 * @param pass the pass
+	 * @return the row usuarios
 	 */
-	//Obtenemos los valores seleccionados en la Tabla de GestUsuarios
-	//para mostrarlos inicialmente en esta pantalla
 	public static void getRowUsuarios(String id,String tipo,String pass) {
 		txIdUsuario.setText(id);
 		cbTipoUsuario.setSelectedItem(tipo);

@@ -1,11 +1,12 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package util;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Strings constantes referentes a los mensajes de confirmación y error.
+ * 
  * The Class ConstantsMessage.
  */
 public class ConstantsMessage {
@@ -93,6 +94,19 @@ public class ConstantsMessage {
 	
 	/** The Constant msg27. */
 	public final static String msg27 = "Fecha Fin no puede ser menor que Fecha Inicio";
+	
+	/** The Constant msg28. */
+	public final static String msg28 = "Convocatoria Añadida Correctamente";
+	
+	/** The Constant msg29. */
+	public final static String msg29 = "Presentación Añadida Correctamente";
+	
+	/** The Constant msg30. */
+	public final static String msg30 = "Modificada Convocatoria";
+	
+	/** The Constant msg31. */
+	public final static String msg31 = "Modificada Presentación";
+	
 
 
 	/** The Constant optionsClose. */

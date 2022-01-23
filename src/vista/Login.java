@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -9,10 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFrame;
@@ -32,7 +28,6 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Login.
  */
@@ -69,19 +64,29 @@ public class Login extends JFrame {
 	private MenuPrincipal mn = new MenuPrincipal();
 	
 	
-	/** The id usuario. */
-	public static String TipoUsuario,idUsuario;
+	/** The id user. */
+	public static String TipoUsuario,idUser;
 
 	/** The conn. */
 	//Variables Conexión
 	private Connection conn;
 	
-	/** The lista tipo usuarios. */
-	private ArrayList<String> listaTipoUsuarios = new ArrayList<String>();
 	
-	/** The lista id usuarios. */
-	private ArrayList<String> listaIdUsuarios = new ArrayList<String>();
-	
+	/**
+	 * Instantiates a new login.
+	 */
+	/**public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Login frame = new Login();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}**/
 
 	/**
 	 * Instantiates a new login.
@@ -154,13 +159,12 @@ public class Login extends JFrame {
 		contentPane.add(btnSalir);
 		btnSalir.addActionListener(new InnerAction());//Agregamos el ActionListener desde la innerClass//
 
+		//pasamos el tipo de usuario desde la BBDD
+		cbTipo.setModel(new DefaultComboBoxModel<String>(udao.listaTipoUsuarios().toArray(new String[0])));
+
+		//pasamos el ID de usuario desde la BBDD y Llamamos al método para listar el ID usuario en comboBox	
+		cbID.setModel(new DefaultComboBoxModel<String>(udao.listaIdUsuarios().toArray(new String[0])));
 		
-		ArrayList<?> userType = udao.listaTipoUsuarios(listaTipoUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbTipo.setModel(new DefaultComboBoxModel<String>(userType.toArray(new String[0])));
-		
-		ArrayList<?> userID = udao.listaIdUsuarios(listaIdUsuarios); //pasamos el ID de usuario desde la BBDD
-		cbID.setModel(new DefaultComboBoxModel<String>(userID.toArray(new String[0]))); //Llamamos al método para listar el ID usuario en comboBox	
-	
 		if(conn == null) {
 			ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass); //Conexión BBDD
 			System.out.println("Aplicación Iniciada");
@@ -176,7 +180,6 @@ public class Login extends JFrame {
 	/**
 	 * The Class InnerAction.
 	 */
-	//Definimos los actionListener de los componentes desde la inner class
 	public class InnerAction implements ActionListener{
 
 		/**
@@ -204,46 +207,32 @@ public class Login extends JFrame {
 					
 				}else {
 					try {
-						//Establecemos conexión con BBDD
-						//conn = DriverManager.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-						conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-						Statement st = conn.createStatement();
-						
-						//Definimos la consulta para comprobar que las creedenciales introducidas
-						//existen en la BBDD
-						String queryAccess = "SELECT * FROM usuarios "
-											+ "WHERE idUsuario = '"+cbID.getSelectedItem().toString()+
-											"' AND tipoUsuario = '"+cbTipo.getSelectedItem().toString() +
-											"' AND passUsuario = '"+txPass.getText().toString()+"'";
-
-						ResultSet rs = st.executeQuery(queryAccess);
+						//Declaramos las variables
+						String idUsuario = cbID.getSelectedItem().toString();
+						String tipoUsuario = cbTipo.getSelectedItem().toString();
+						String passUsuario = txPass.getText().toString();
 						List<Object> list = Arrays.asList(cbTipo.getSelectedItem()); 
-						
-						if(rs.next()) {
-							//Guardamos los valores del objeto Usuarios
+
+						//Llamamos al método checkuser de UsuariosImplDAO pra comprobar las credenciales desde la BBDD
+						if(udao.checkUser(idUsuario, tipoUsuario, passUsuario) == true) {
+							//Guardamos los valores del objeto Usuarios y lo mostramos por pantalla
 						    u.setIdUsuario(cbID.getSelectedItem().toString());
 						    u.setTipoUsuario(list);
 						    u.setPassUsuario(txPass.getText());
 						    System.out.println(u.toString());
 						    
+						    //Pasamos los valores estáticos
+						    idUser = cbID.getSelectedItem().toString();
 						    TipoUsuario = cbTipo.getSelectedItem().toString();
-						    idUsuario = cbID.getSelectedItem().toString();
-						    System.out.println("ID Usuario: "+idUsuario+" Tipo Usuario Login: "+TipoUsuario);
+						    System.out.println("ID Usuario: "+idUser+" Tipo Usuario Login: "+TipoUsuario);
 						    
 						    mn.setVisible(true); //Abrimos ventana MenuPrincipal
 						    dispose(); //Cerramos ventana Login
 						    System.out.println("Datos Correctos");
 						    
 						}else {
-							System.out.println("Datos Incorrectos");
-							JOptionPane.showMessageDialog(null,ConstantsMessage.msg6,ConstantsMessage.msg0, JOptionPane.ERROR_MESSAGE); 
 							restart(); //Reiniciamos campos
 						}
-						
-
-						
-					} catch (SQLException ex) {
-						ex.printStackTrace();
 					} catch (NullPointerException ex) {
 						ex.getMessage();
 					}
@@ -264,7 +253,6 @@ public class Login extends JFrame {
 	/**
 	 * The Class innerKeyLogin.
 	 */
-	//Innerclass para los eventos de teclado
 	public class innerKeyLogin implements KeyListener{
 
 		/**
@@ -306,9 +294,10 @@ public class Login extends JFrame {
 	}	
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
-	//Método para reiniciar los campos seleccionados
 	public void restart() {
 		//Reiniciamos componentes
 		cbTipo.setSelectedIndex(0); 

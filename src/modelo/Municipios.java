@@ -1,14 +1,15 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package modelo;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Objeto Evento
+ * 
  * The Class Municipios.
  */
-public class Municipios extends Usuarios{
+public class Municipios{
 	
 	/** The id municipio. */
 	private String idMunicipio;
@@ -16,6 +17,10 @@ public class Municipios extends Usuarios{
 	/** The categoria municipio. */
 	private int categoriaMunicipio;
 	
+	/** The id usuario. */
+	private String idUsuario;
+
+
 	/**
 	 * Instantiates a new municipios.
 	 */
@@ -71,6 +76,24 @@ public class Municipios extends Usuarios{
 	public void setCategoriaMunicipio(int categoriaMunicipio) {
 		this.categoriaMunicipio = categoriaMunicipio;
 	}
+	
+	/**
+	 * Gets the id usuario.
+	 *
+	 * @return the id usuario
+	 */
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+
+	/**
+	 * Sets the id usuario.
+	 *
+	 * @param idUsuario the new id usuario
+	 */
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+	}
 
 	/**
 	 * To string.
@@ -79,9 +102,9 @@ public class Municipios extends Usuarios{
 	 */
 	@Override
 	public String toString() {
-		return "Municipios [idMunicipio=" + idMunicipio + ", categoriaMunicipio=" + categoriaMunicipio
-				+ ", getTipoUsuario()=" + getTipoUsuario() + "]";
+		return "Municipios [idMunicipio=" + idMunicipio + ", categoriaMunicipio=" + categoriaMunicipio + ", idUsuario="
+				+ idUsuario + "]";
 	}
-		
+
 	
 }

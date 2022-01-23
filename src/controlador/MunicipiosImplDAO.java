@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -14,14 +14,12 @@ import util.ConstantsDB;
 
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MunicipiosImplDAO.
  */
 public class MunicipiosImplDAO implements MunicipioDAO{
 
 	/** The conn. */
-	//Vairables BBDD
 	private Connection conn;
 	
 	/** The st. */
@@ -37,13 +35,11 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 	/**
 	 * Lista id usuarios municipios.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	//Lista ID usuarios cuentadantes
 	@Override
-	public ArrayList<?> listaIdUsuariosMunicipios(ArrayList<String> c) {
-
+	public ArrayList<String> listaIdUsuariosMunicipios() {
+		ArrayList<String> c = new ArrayList<String>();
 		try {
 			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
@@ -69,11 +65,11 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 	/**
 	 * Lista tipo usuarios mun.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
 	@Override
-	public ArrayList<?> listaTipoUsuariosMun(ArrayList<String> c) {
+	public ArrayList<String> listaTipoUsuariosMun() {
+		ArrayList<String> c = new ArrayList<String>();
 		try {
 			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
@@ -96,6 +92,8 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 
 
 	/**
+	 * Añade un nuevo municipio en la BBDD
+	 * 
 	 * Adds the municipio.
 	 *
 	 * @param id        the id
@@ -132,6 +130,8 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 	}
 
 	/**
+	 * Actualizamos el municipio seleccionado en la BBDD
+	 * 
 	 * Update municipio.
 	 *
 	 * @param idMun       the id mun
@@ -142,7 +142,6 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 	@Override
 	public void updateMunicipio(String idMun, int catMun,String idUser, String tipoUsuario) {
 		try {
-			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			if(conn != null) {
@@ -175,6 +174,8 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 	}
 
 	/**
+	 * Eliminamos en municpio seleccionado en la BBDD
+	 * 
 	 * Delete municipio.
 	 *
 	 * @param id the id
@@ -201,7 +202,6 @@ public class MunicipiosImplDAO implements MunicipioDAO{
 				System.out.println("No es posible eliminar municipios, no hay conexión con BBDD");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

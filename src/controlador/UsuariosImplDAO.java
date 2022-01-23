@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -10,18 +10,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import util.ConstantsDB;
+import util.ConstantsMessage;
 
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UsuariosImplDAO.
  */
 public class UsuariosImplDAO implements UsuarioDAO{
 	
 	/** The conn. */
-	//Vairables BBDD
 	private Connection conn;
 	
 	/** The st. */
@@ -33,21 +35,65 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	/** The pst. */
 	private PreparedStatement pst;
 
+	
+	/**
+	 * Comprobación credenciales usuarios en BBDD desde pantalla Login
+	 * 
+	 * Check user.
+	 *
+	 * @param id   the id
+	 * @param tipo the tipo
+	 * @param pass the pass
+	 * @return true, if successful
+	 */
+	@Override
+	public boolean checkUser(String id, String tipo, String pass) {
+		try {
+			//Establecemos conexión con BBDD
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			Statement st = conn.createStatement();
+			
+			//Definimos la consulta para comprobar que las creedenciales introducidas
+			//existen en la BBDD
+			String queryAccess = "SELECT * FROM usuarios "
+								+ "WHERE idUsuario = '"+id+
+								"' AND tipoUsuario = '"+tipo +
+								"' AND passUsuario = '"+pass+"'";
+
+			ResultSet rs = st.executeQuery(queryAccess);
+			
+			if(rs.next()) {
+			    System.out.println("Datos Correctos \nConectado: ID Usuario: "+id+" - Tipo Usuario: "+tipo);
+			    return true;
+			    
+			}else {
+				System.out.println("Datos Incorrectos");
+				JOptionPane.showMessageDialog(null,ConstantsMessage.msg6,ConstantsMessage.msg0, JOptionPane.ERROR_MESSAGE); 
+				return false;
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} catch (NullPointerException ex) {
+			ex.getMessage();
+		}
+		
+		return false;
+		
+	}
 
 	/**
 	 * Lista tipo usuarios.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
 	//Método para listar tipo de usuarios de la BBDD
 	@Override
-	public ArrayList<?> listaTipoUsuarios(ArrayList<String> c) {
+	public ArrayList<String> listaTipoUsuarios() {
+		ArrayList<String> c = new ArrayList<String>();
 		try {
-			//jc.removeAllItems(); //primero eliminamos todos los elementos
 			
 			//Establecemos conexión con la BBDD
-			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			st = conn.createStatement();
 
@@ -70,12 +116,12 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	/**
 	 * Lista id usuarios.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
 	//Método para listar ID usuarios de la BBDD
 	@Override
-	public ArrayList<?> listaIdUsuarios(ArrayList<String> c) {
+	public ArrayList<String> listaIdUsuarios() {
+		ArrayList<String> c = new ArrayList<String>();
 		try {
 			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
@@ -96,17 +142,17 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	}
 
 	/**
+	 * Añadimos nuevo usuario en la BBDD
+	 * 
 	 * Adds the user.
 	 *
 	 * @param id       the id
 	 * @param tipo     the tipo
 	 * @param password the password
 	 */
-	//Método para añadir un usuario a la BBDD
 	@Override
 	public void addUser(String id,String tipo,String password) {
 		try {
-			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			if(conn != null) {
@@ -127,17 +173,17 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	}
 
 	/**
+	 * Actualiza usuario en la BBDD
+	 * 
 	 * Update user.
 	 *
 	 * @param id       the id
 	 * @param tipo     the tipo
 	 * @param password the password
 	 */
-	//Método para actualizar un usuario de la BBDD
 	@Override
 	public void updateUser(String id,String tipo,String password) {
 		try {
-			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			if(conn != null) {
@@ -166,15 +212,15 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	}
 
 	/**
+	 * Elimina al usuario seleccionado en la BBDD
+	 * 
 	 * Delete user.
 	 *
 	 * @param id the id
 	 */
-	//Método para eliminar un usuario de la BBDD
 	@Override
 	public void deleteUser(String id) {
 		try {
-			//conn = DriverManager.getConnection(ConstantsDB.server, ConstantsDB.user, ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			if(conn != null) {
@@ -197,14 +243,15 @@ public class UsuariosImplDAO implements UsuarioDAO{
 	}
 
 	/**
+	 * Lista usuarios asociados a las convocatorias
+	 * 
 	 * Lista id user conv.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	//Lista id usuarios enlazados con convocatorias y presentaciones, siendo solo Cuentadantes o Fiscales
 	@Override
-	public ArrayList<?> listaIdUserConv(ArrayList<String> c) {
+	public ArrayList<String> listaIdUserConv() {
+		ArrayList<String> c = new ArrayList<String>();
 		try {
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			st = conn.createStatement();

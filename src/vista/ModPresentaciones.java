@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -12,12 +12,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -28,16 +22,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import controlador.ConDB;
 import controlador.ConvImplDAO;
 import controlador.MunicipiosImplDAO;
 import controlador.PresentacionImplDAO;
 import modelo.Presentaciones;
-import util.ConstantsDB;
 import util.ConstantsGestPresentaciones;
 import util.ConstantsMessage;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
@@ -47,7 +37,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import java.awt.Color;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ModPresentaciones.
  */
@@ -98,13 +87,6 @@ public class ModPresentaciones extends JDialog {
 	/** The table docs. */
 	private JTable tableDocs;
 	
-	/** The i D usuarios. */
-	//Variable listar datos id usuario  y convocatorias desde arraylist de BBDD
-	private ArrayList<String> iDUsuarios = new ArrayList<String>();
-	
-	/** The i D conv. */
-	private ArrayList<String> iDConv = new ArrayList<String>();
-	
 	/** The mdao. */
 	//Llamada clase UsuariosImplDAO
 	private MunicipiosImplDAO mdao = new MunicipiosImplDAO();
@@ -117,20 +99,14 @@ public class ModPresentaciones extends JDialog {
 	//Llamada clase PresentacionImplDAO
 	private PresentacionImplDAO pdao = new PresentacionImplDAO();
 	
+	/** The image OK. */
+	//Icono mensaje correcto
+	ImageIcon imageOK = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgOK));
+	
 	/** The image error. */
 	//Variable ImageIcon
 	private ImageIcon imageError = new ImageIcon(AltaConvocatorias.class.getResource(ConstantsMessage.imgError));
-	
-	/** The st. */
-	//Variables BBDD
-	private Statement st;
-	
-	/** The rs. */
-	private ResultSet rs;
-	
-	/** The conn. */
-	private Connection conn;
-	
+		
 	/** The p. */
 	private Presentaciones p = new Presentaciones();
 
@@ -155,8 +131,9 @@ public class ModPresentaciones extends JDialog {
 		cbIDConv = new JComboBox<String>();
 		cbIDConv.setBounds(0, 25, 149, 27);
 		contentPanel.add(cbIDConv);
-		ArrayList<?> s = cdao.listaIDConvocatoria(iDConv); //pasamos el id de convocatorias desde la BBDD
-		cbIDConv.setModel(new DefaultComboBoxModel<String>(s.toArray(new String[0]))); //listamos valores en cbIDConv
+		//ArrayList<?> s = cdao.listaIDConvocatoria(iDConv); 
+		//pasamos el id de convocatorias desde la BBDD y listamos valores en cbIDConv
+		cbIDConv.setModel(new DefaultComboBoxModel<String>(cdao.listaIDConvocatoria().toArray(new String[0]))); 
 		cbIDConv.addActionListener(new InnerActionModPre());
 		
 		//Label Fecha Inicio convocatoria
@@ -211,8 +188,9 @@ public class ModPresentaciones extends JDialog {
 		cbIdUsuario = new JComboBox<String>();
 		contentPanel.add(cbIdUsuario);
 		cbIdUsuario.setBounds(289, 93, 134, 27);
-		ArrayList<?> m = mdao.listaIdUsuariosMunicipios(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbIdUsuario.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		//ArrayList<?> m = mdao.listaIdUsuariosMunicipios(iDUsuarios); 
+		//pasamos el tipo de usuario desde la BBDD y listamos valores en cbIdUsuario
+		cbIdUsuario.setModel(new DefaultComboBoxModel<String>(mdao.listaIdUsuariosMunicipios().toArray(new String[0]))); 
 		
 		//Label Fecha Presentación
 		lbFechaPres = new JLabel(ConstantsGestPresentaciones.labelFechaPres);
@@ -336,7 +314,10 @@ public class ModPresentaciones extends JDialog {
 			}
 		}
 		
-		fechasConvocatoria(); //Añadimos método para mostrar las fechas de la convocatoria seleccionada
+		//fechasConvocatoria(); //Añadimos método para mostrar las fechas de la convocatoria seleccionada
+		//Añadimos los métodos desde PresentacionesImlDAO
+		txInicioConv.setText(pdao.fechasConvInicio(cbIDConv.getSelectedItem().toString()));
+		txFinConv.setText(pdao.fechaConvFin(cbIDConv.getSelectedItem().toString()));
 	}
 	
 	/**
@@ -371,7 +352,9 @@ public class ModPresentaciones extends JDialog {
 			}
 			
 			if(e.getSource()==cbIDConv) {
-				fechasConvocatoria(); //actualizamos valores si cambiamos de selección
+				//Actualizamos valores cuando seleccionamos otro elemento del combobox
+				txInicioConv.setText(pdao.fechasConvInicio(cbIDConv.getSelectedItem().toString()));
+				txFinConv.setText(pdao.fechaConvFin(cbIDConv.getSelectedItem().toString()));
 			}
 			
 			if(e.getSource()==okButton) {
@@ -386,7 +369,7 @@ public class ModPresentaciones extends JDialog {
 					
 				}else if(p.compruebaFecha(fechaInicioConv, fechaPres) == false) {
 					//Mensaje que se muestra cuando el formato de fecha es incorrectp
-					JOptionPane.showMessageDialog(null,ConstantsMessage.msg18,ConstantsMessage.msg0,
+					JOptionPane.showMessageDialog(null,ConstantsMessage.msg25,ConstantsMessage.msg0,
 							  JOptionPane.PLAIN_MESSAGE,imageError);
 					
 				}else if(txFechaPres.getText().length() == 0) {
@@ -415,7 +398,7 @@ public class ModPresentaciones extends JDialog {
 											 docsValues);
 						
 						//Actualizamos la tabla GestPresentaciones pasándole los nuevos valores
-						GestPresentaciones.setRowConvocatorias(textIdPres.getText().toString(), 
+						GestPresentaciones.setRowPresentaciones(textIdPres.getText().toString(), 
 											 cbIDConv.getSelectedItem().toString(),
 											 cbIdUsuario.getSelectedItem().toString(),
 											 txFechaPres.getText().toString(), 
@@ -424,6 +407,10 @@ public class ModPresentaciones extends JDialog {
 						
 						dispose(); //cerramos la ventana
 						restart(); //reiniciamos los campos
+						
+						//Mensaje operación OK
+						JOptionPane.showMessageDialog(null,ConstantsMessage.msg31,ConstantsMessage.msg8,
+								JOptionPane.PLAIN_MESSAGE,imageOK);
 					}
 
 				}
@@ -482,6 +469,8 @@ public class ModPresentaciones extends JDialog {
 	}
 	
 	/**
+	 * Obtenemos los valores de la tabla en GestPresentaciones
+	 * 
 	 * Gets the row presentaciones.
 	 *
 	 * @param idPres    the id pres
@@ -490,8 +479,8 @@ public class ModPresentaciones extends JDialog {
 	 * @param fechaPres the fecha pres
 	 * @param estado    the estado
 	 * @param docs      the docs
+	 * @return the row presentaciones
 	 */
-	//Obtenemos los datos seleccionados en la pantalla GestPresentaciones
 	public static void getRowPresentaciones(String idPres,String idConv,String idUser,String fechaPres,String estado,String docs) {
 		textIdPres.setText(idPres);
 		cbIDConv.setSelectedItem(idConv);
@@ -516,43 +505,14 @@ public class ModPresentaciones extends JDialog {
 		
 	}
 	
-	/**
-	 * Fechas convocatoria.
-	 */
-	//Obtenemos las fechas de inicio y cierre de la convocaotira seleccionada mediante una consulta en la BBDD
-	private void fechasConvocatoria() {
-		String idConv = cbIDConv.getSelectedItem().toString();
-		
-		try {
-			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-			st = conn.createStatement();
-			
-			String queryFechasConvocatoria = "SELECT fechaApertura,fechaCierre "
-										   + "FROM convocatorias "
-										   + "WHERE idConvocatorias = '"+idConv+"'";
-			
-			rs = st.executeQuery(queryFechasConvocatoria);
-			
-			SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			
-			while(rs.next()) {
-				txInicioConv.setText(myFormat.format(fromUser.parse(rs.getString(ConstantsDB.valueFechaApertura))));
-				txFinConv.setText(myFormat.format(fromUser.parse(rs.getString(ConstantsDB.valueFechaCierre))));
-			}
-			
-		} catch (SQLException | ParseException e) {
-			e.printStackTrace();
-		}
-	};
-	
 	
 	/**
+	 * Método para devolver un valor boolean a la columna estado en la BBDD y evitar problemas de conversión 
+	 * 
 	 * Tipo estado DB.
 	 *
 	 * @return true, if successful
 	 */
-	//Cambiamos el tipo de valor booleano en función del tipo elemento seleccionado en el comboBox jComboTipo
 	private boolean tipoEstadoDB() {
 		if(checkAbierto.isSelected()==false) {
 			return false;
@@ -562,11 +522,12 @@ public class ModPresentaciones extends JDialog {
 	
 	
 	/**
+	 * Devuelve un tipo numérico a la tabla en lugar de false o true
+	 * 
 	 * Tipo estado tabla.
 	 *
 	 * @return the int
 	 */
-	//Cambiamos el tipo de estado a numérico para añadirlo a la tabla de GestConvocatorias
 	public int tipoEstadoTabla() {
 			if(checkAbierto.isSelected()==false) {
 				return 0;
@@ -576,9 +537,10 @@ public class ModPresentaciones extends JDialog {
 
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
-	//Método para limpiar campos una vez modificada la convocatoria
 	public void restart() {
 		//Reiniciamos componentes
 		checkAbierto.setSelected(true);

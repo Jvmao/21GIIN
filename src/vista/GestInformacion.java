@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -28,10 +28,6 @@ import controlador.ConDB;
 import util.ConstantsDB;
 import util.ConstantsGestInformacion;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GestInformacion.
- */
 
 /**
  * The Class GestInformacion.
@@ -187,6 +183,8 @@ public class GestInformacion extends JPanel {
 		modelPres.addColumn(ConstantsGestInformacion.tableColumnsPres[3]);
 		modelPres.addColumn(ConstantsGestInformacion.tableColumnsPres[4]);
 		modelPres.addColumn(ConstantsGestInformacion.tableColumnsPres[5]);
+		//modelPres.addColumn(ConstantsGestInformacion.tableColumnsPres[6]);
+		//modelPres.addColumn(ConstantsGestInformacion.tableColumnsPres[7]);
 		scrollPres.setViewportView(tablePres);
 		
 		try {
@@ -201,11 +199,13 @@ public class GestInformacion extends JPanel {
 	
 	
 	/**
+	 * Mostramos información de Convocatorias almacenada en BBDD en tabla correspondiente
+	 * 
 	 * Populate info conv.
 	 *
 	 * @throws ParseException the parse exception
 	 */
-	//mostramos los datos de la BBDD de la tabla presentaciones en la tabla
+
 	private void populateInfoConv() throws ParseException {
 		try {
 			//Conexión a la BBDD
@@ -253,6 +253,8 @@ public class GestInformacion extends JPanel {
 	
 	
 	/**
+	 * Mostramos información de las presentaciones almacenada en BBDD en la pantalla
+	 * 
 	 * Populate info pres.
 	 *
 	 * @throws ParseException the parse exception
@@ -260,7 +262,6 @@ public class GestInformacion extends JPanel {
 	private void populateInfoPres() throws ParseException {
 		try {
 			//Conexión a la BBDD
-			//conn = DriverManager.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			//Consulta a BBDD
@@ -270,9 +271,11 @@ public class GestInformacion extends JPanel {
 
 		    //Obtenemos todos los valores de la BBDD y los vamos añadiendo uno a uno en la tabla
 		    while (rs.next()) {
-		    	String idMun = rs.getString(ConstantsDB.valuesIdMunPres);    
+		    	String idPres = rs.getString(ConstantsDB.valuesIdPres);    
+		    	String idConv = rs.getString(ConstantsDB.valuesIdConvPres);
 		    	String idUser = rs.getString(ConstantsDB.valuesIdUsuerPres);
-		    	String catMun = rs.getString(ConstantsDB.valuesCatMunPres);
+		    	//String idMun = rs.getString(ConstantsDB.valuesIdMunPres);
+		    	//String catMun = rs.getString(ConstantsDB.valuesCatMunPres);
 		    	String fPres = rs.getString(ConstantsDB.valuesFechaPres);
 		    	int estPres = rs.getInt(ConstantsDB.valuesEstadoPres);
 				String docPres = rs.getString(ConstantsDB.valuesDocsPres);
@@ -293,9 +296,11 @@ public class GestInformacion extends JPanel {
 				}
 		    	
 				//Añadimos la fila correspondiente en la talba
-		    	modelPres.addRow(new Object[] {idMun,
+		    	modelPres.addRow(new Object[] {idPres,
+		    									idConv,
 		    									idUser,
-		    									catMun,
+		    									//idMun,
+		    									//catMun,
 		    									outputApertura.format(dateValueApertura),
 		    									estPres,
 		    									nDocs});
@@ -310,21 +315,24 @@ public class GestInformacion extends JPanel {
 	
 	
 	/**
+	 * Obtenemos id y tipo de usuario conectado desde Menu Principal
+	 * 
 	 * Sets the valores usuario.
 	 *
 	 * @param id     the id
 	 * @param nombre the nombre
 	 */
-	//Recogemos el valor de ID y Tipo de Usuario desde la clase de MenuPrincipal
 	public void setValoresUsuario (String id,String nombre){
 			txIDUsuario.setText(id);
 			txTipoUsuario.setText(nombre);
 	}
 	
 	/**
+	 * Calcula las convocatorias que estan abiertas (1) y las que están cerrada (0)
+	 * y las muestra en los campos habilitados
+	 * 
 	 * Calcula totales estado.
 	 */
-	//Método para calcular el total de convocatorias abiertas y cerradas
 	private void calculaTotalesEstado() {
 		int totalAbiertos = 0;
 		int totalCerrados = 0;

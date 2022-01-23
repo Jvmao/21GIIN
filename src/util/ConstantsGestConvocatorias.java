@@ -1,11 +1,12 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package util;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Strings constantes referentes a las convocatorias
+ * 
  * The Class ConstantsGestConvocatorias.
  */
 public class ConstantsGestConvocatorias {
@@ -26,7 +27,7 @@ public class ConstantsGestConvocatorias {
 	public final static String labelIdConvocatorias = "ID Convocatorias";
 	
 	/** The Constant labelUsuarioConvocatorias. */
-	public final static String labelUsuarioConvocatorias = "Usuario Convocatorias";
+	public final static String labelUsuarioConvocatorias = "Usuario Conv.";
 	
 	/** The Constant labelDescripcion. */
 	public final static String labelDescripcion = "Descripción";

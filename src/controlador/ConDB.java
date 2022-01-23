@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -14,7 +14,6 @@ import java.util.Properties;
 
 import util.ConstantsDB;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ConDB.
  */
@@ -24,6 +23,8 @@ public class ConDB {
 	private static Connection conn = null;
 
 	/**
+	 * Definimos método para la conexión de la BBDD
+	 * 
 	 * Gets the connection.
 	 *
 	 * @param server the server
@@ -45,9 +46,7 @@ public class ConDB {
 	            
 	        //Cargamos el archivo 
 	        props.load(readFile);
-	        
-			
-			//conn = DriverManager.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+
 			conn = DriverManager.getConnection(props.getProperty(server),
 												props.getProperty(user),
 												props.getProperty(pass));

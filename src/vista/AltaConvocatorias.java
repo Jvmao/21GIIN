@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 
@@ -15,10 +15,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -33,11 +29,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import controlador.ConDB;
+
 import controlador.ConvImplDAO;
 import controlador.UsuariosImplDAO;
 import modelo.Convocatorias;
-import util.ConstantsDB;
 import util.ConstantsGestConvocatorias;
 import util.ConstantsMessage;
 
@@ -47,12 +42,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JCheckBox;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AltaConvocatorias.
- */
+
 
 /**
+ * 
  * The Class AltaConvocatorias.
  */
 
@@ -93,12 +86,13 @@ public class AltaConvocatorias extends JDialog {
 	/** The table docs. */
 	private JTable tableDocs;
 	
+	/** The image OK. */
+	//Icono mensaje correcto
+	ImageIcon imageOK = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgOK));
+	
 	/** The image error. */
 	//Recurso imagen
 	private ImageIcon imageError = new ImageIcon(AltaConvocatorias.class.getResource(ConstantsMessage.imgError));
-	
-	/** The i D usuarios. */
-	private ArrayList<String> iDUsuarios = new ArrayList<String>();
 	
 	/** The udao. */
 	private UsuariosImplDAO udao = new UsuariosImplDAO();
@@ -113,15 +107,6 @@ public class AltaConvocatorias extends JDialog {
 	/** The button pane. */
 	private JPanel buttonPane;
 	
-	/** The st. */
-	//Variables BBDD
-	private Statement st;
-	
-	/** The rs. */
-	private ResultSet rs;
-	
-	/** The conn. */
-	private Connection conn;
 
 	/**
 	 * Instantiates a new alta convocatorias.
@@ -162,14 +147,14 @@ public class AltaConvocatorias extends JDialog {
 		cbUserConv = new JComboBox<String>();
 		cbUserConv.setBounds(164, 59, 108, 27);
 		contentPanel.add(cbUserConv);
-		ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbUserConv.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbIdUsuario
+		//ArrayList<?> m = udao.listaIdUserConv(iDUsuarios); //pasamos el tipo de usuario desde la BBDD
+		cbUserConv.setModel(new DefaultComboBoxModel<String>(udao.listaIdUserConv().toArray(new String[0]))); //listamos valores en cbIdUsuario
 		
 		//Listener combobox Id Convocatorias para actualizar los datos cuando se selecciona otro item distinto
 		cbUserConv.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				infoUsuariosConv();
+				txUserConv.setText(cdao.infoUsuariosConv(cbUserConv.getSelectedItem().toString())); //actualizamos valores
 			}
 			
 		});
@@ -313,8 +298,8 @@ public class AltaConvocatorias extends JDialog {
 				cancelButton.addActionListener(new InnerActionAltaConvocatorias());
 			}
 		}
-		
-		infoUsuariosConv(); //instanciamos método infoUsuariosConv()
+		//instanciamos método infoUsuariosConv() desde la clase ConvImplDAO
+		txUserConv.setText(cdao.infoUsuariosConv(cbUserConv.getSelectedItem().toString())); 
 	}
 	
 	/**
@@ -394,6 +379,10 @@ public class AltaConvocatorias extends JDialog {
 						
 						dispose(); //cierra pantalla
 						restart(); //reinicia campos
+						
+						//Mensaje operación OK
+						JOptionPane.showMessageDialog(null,ConstantsMessage.msg28,ConstantsMessage.msg8,
+								JOptionPane.PLAIN_MESSAGE,imageOK);
 					}
 					
 				
@@ -460,39 +449,14 @@ public class AltaConvocatorias extends JDialog {
 		
 	}
 	
-	/**
-	 * Info usuarios conv.
-	 */
-	//Método para obtener los usuarios asociados a las convocatorias desde la consulta a la BBDD
-	private void infoUsuariosConv() {
-		String idConv = cbUserConv.getSelectedItem().toString();
-		try {
-			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
-			st = conn.createStatement();
-			
-			String queryInfoUsuarioConv = "SELECT tipoUsuario "
-										   + "FROM usuarios "
-										   + "WHERE idUsuario = '"+idConv+"' ";
-			
-			rs = st.executeQuery(queryInfoUsuarioConv);
-			
-			
-			while(rs.next()) {
-				txUserConv.setText(rs.getString(ConstantsDB.valueTipo));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	};
 
 	/**
+	 * Método para devolver un valor boolean a la columna estado en la BBDD y evitar problemas de conversión 
+	 * 
 	 * Tipo estado DB.
 	 *
 	 * @return true, if successful
 	 */
-	
-	//Cambiamos el tipo de valor booleano en función del tipo elemento seleccionado en el comboBox jComboTipo
 	private boolean tipoEstadoDB() {
 			if(checkAbierto.isSelected()==false) {
 				return false;
@@ -501,11 +465,12 @@ public class AltaConvocatorias extends JDialog {
 	}
 		
 	/**
+	 * Devuelve un tipo numérico a la tabla en lugar de false o true
+	 * 
 	 * Tipo estado tabla.
 	 *
 	 * @return the int
 	 */
-	//Cambiamos el tipo de estado a numérico para añadirlo a la tabla de GestConvocatorias
 	public int tipoEstadoTabla() {
 			if(checkAbierto.isSelected()==false) {
 				return 0;
@@ -515,9 +480,10 @@ public class AltaConvocatorias extends JDialog {
 			
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
-	//Método para limpiar campos una vez dada de alta una nueva convocatoria
 	public void restart() {
 		//Reiniciamos componentes
 		txIdConvocatoria.setText("");

@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
@@ -7,38 +7,43 @@ package controlador;
 
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface UsuarioDAO.
- */
+
 /**
  * The Interface UsuarioDAO.
  */
 public interface UsuarioDAO {
 	
 	/**
+	 * Check user.
+	 *
+	 * @param id   the id
+	 * @param tipo the tipo
+	 * @param pass the pass
+	 * @return true, if successful
+	 */
+	public boolean checkUser(String id,String tipo,String pass);
+	
+	/**
 	 * Lista tipo usuarios.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaTipoUsuarios(ArrayList<String> c); 
+	public ArrayList<String> listaTipoUsuarios(); 
+	
 	
 	/**
 	 * Lista id usuarios.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaIdUsuarios(ArrayList<String> c);
+	public ArrayList<String> listaIdUsuarios();
 	
 	/**
 	 * Lista id user conv.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaIdUserConv(ArrayList<String> c);
+	public ArrayList<String> listaIdUserConv();
 	
 	/**
 	 * Adds the user.

@@ -1,15 +1,11 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface PresentacionDAO.
- */
 
 /**
  * The Interface PresentacionDAO.
@@ -49,5 +45,23 @@ public interface PresentacionDAO {
 	 * @param idPres the id pres
 	 */
 	public void delPresentacion(String idPres);
+	
+	
+	/**
+	 * Fechas conv inicio.
+	 *
+	 * @param idPres the id pres
+	 * @return the string
+	 */
+	public String fechasConvInicio(String idPres);
+	
+	/**
+	 * Fecha conv fin.
+	 *
+	 * @param idPres the id pres
+	 * @return the string
+	 */
+	public String fechaConvFin(String idPres);
+	
 	
 }

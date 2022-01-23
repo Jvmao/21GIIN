@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -33,9 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 // TODO: Auto-generated Javadoc
-/**
- * The Class GestMunicipios.
- */
+
 
 /**
  * The Class GestMunicipios.
@@ -174,21 +172,23 @@ public class GestMunicipios extends JPanel {
 	}
 	
 	/**
+	 * Conseguimos el id y el tipo de usuario desde la vista MenuPrincipal
+	 * 
 	 * Sets the valor tipo usuario.
 	 *
 	 * @param id     the id
 	 * @param nombre the nombre
 	 */
-	//Recogemos el valor de Tipo de Usuario desde la clase de MenuPrincipal
 	public void setValorTipoUsuario (String id,String nombre){
 			 txIdUsuario.setText(id);
 			 txTipoUsuario.setText(nombre);
 	}
 	
 	/**
+	 * Mostramos en la tabla los datos de los municipios almacenados en BBDD
+	 * 
 	 * Populate municipios data.
 	 */
-	//Definimos método para mostrar los datos almacenados en la BBDD respecto de la tabla usuarios
 	private void populateMunicipiosData() {
 		try {
 			//Conexión a la BBDD
@@ -222,7 +222,6 @@ public class GestMunicipios extends JPanel {
 	/**
 	 * The Class InnerActionGestMunicipios.
 	 */
-	//Definimos los actionListener de los componentes desde la inner class
 	public class InnerActionGestMunicipios implements ActionListener{
 
 		/**
@@ -282,17 +281,21 @@ public class GestMunicipios extends JPanel {
 	}
 	
 	/**
+	 * Añadimos nueva fila cuando se añade un nuevo municipio desde AltaMunicipios
+	 * 
 	 * Adds the row municipios.
 	 *
 	 * @param dataRow the data row
 	 */
 	public static void addRowMunicipios (Object[] dataRow) {
 		DefaultTableModel model = (DefaultTableModel) jTableMunicipios.getModel();
-		model.addRow(dataRow); //Añadimos fila en la tabla de un nuevo Municipio creado en AltaMunicipios
+		model.addRow(dataRow); 
 		
 	} 
 	
 	/**
+	 * Recoge los elementos seleccionados de la tabla para mostrarlos en la pantalla de ModMunicipios
+	 * 
 	 * Sets the row municipios.
 	 *
 	 * @param id        the id
@@ -310,11 +313,12 @@ public class GestMunicipios extends JPanel {
 	}
 	
 	/**
+	 * Controla componentes en función del usuario conectado
+	 * 
 	 * Control gest municipios.
 	 *
 	 * @param tipoUsuario the tipo usuario
 	 */
-	//Método para controlar las acciones que pueden llevar a cabo los diferentes usuarios en GestMunicipios
 	public void controlGestMunicipios(String tipoUsuario) {
 		tipoUsuario = txTipoUsuario.getText().toString();
 		

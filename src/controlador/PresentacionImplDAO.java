@@ -1,19 +1,21 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import util.ConstantsDB;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PresentacionImplDAO.
  */
@@ -27,11 +29,16 @@ public class PresentacionImplDAO implements PresentacionDAO{
 	/** The pst. */
 	private PreparedStatement pst;
 	
+	/** The rs. */
+	private ResultSet rs;
+	
 	/** The st. */
-	Statement st;
+	private Statement st;
 	
 
 	/**
+	 * Añadimos nueva presentación en la BBDD
+	 * 
 	 * Adds the presentacion.
 	 *
 	 * @param idPres        the id pres
@@ -75,6 +82,8 @@ public class PresentacionImplDAO implements PresentacionDAO{
 	}
 
 	/**
+	 * Modificamos presentación seleccionada en la BBDD
+	 * 
 	 * Mod presentacion.
 	 *
 	 * @param idPres the id pres
@@ -136,6 +145,8 @@ public class PresentacionImplDAO implements PresentacionDAO{
 	}
 
 	/**
+	 * Eliminamos presentación seleccionada en la BBDD
+	 * 
 	 * Del presentacion.
 	 *
 	 * @param idPres the id pres
@@ -164,6 +175,78 @@ public class PresentacionImplDAO implements PresentacionDAO{
 		}
 		
 	}
+
+	/**
+	 * Obtenemos las fechas de inicio de la convocaotira seleccionada mediante una consulta en la BBDD
+	 * 
+	 * Fechas conv inicio.
+	 *
+	 * @param id the id
+	 * @return the string
+	 */
+	@Override
+	public String fechasConvInicio(String id) {
+		String fInicio = null;
+		try {
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			st = conn.createStatement();
+			
+			String queryFechasConvocatoria = "SELECT fechaApertura "
+										   + "FROM convocatorias "
+										   + "WHERE idConvocatorias = '"+id+"'";
+			
+			rs = st.executeQuery(queryFechasConvocatoria);
+			
+			//Cambiamos formato fecha de BBDD
+			SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			
+			while(rs.next()) {
+				fInicio = myFormat.format(fromUser.parse(rs.getString(ConstantsDB.valueFechaApertura)));
+			}
+			
+		} catch (SQLException | ParseException e) {
+			e.printStackTrace();
+		}
+		return fInicio;
+	}
+
+	/**
+	 * Obtenemos las fechas de cierre de la convocaotira seleccionada mediante una consulta en la BBDD
+	 * 
+	 * Fecha conv fin.
+	 *
+	 * @param id the id
+	 * @return the string
+	 */
+	@Override
+	public String fechaConvFin(String id) {
+		String fCierre = null;
+		try {
+			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
+			st = conn.createStatement();
+			
+			String queryFechasConvocatoria = "SELECT fechaCierre "
+										   + "FROM convocatorias "
+										   + "WHERE idConvocatorias = '"+id+"'";
+			
+			rs = st.executeQuery(queryFechasConvocatoria);
+			
+			//Cambiamos formato fecha de BBDD
+			SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat myFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			
+			while(rs.next()) {
+				fCierre = myFormat.format(fromUser.parse(rs.getString(ConstantsDB.valueFechaCierre)));
+			}
+			
+		} catch (SQLException | ParseException e) {
+			e.printStackTrace();
+		}
+		return fCierre;
+	}
+	
+	
 
 
 }

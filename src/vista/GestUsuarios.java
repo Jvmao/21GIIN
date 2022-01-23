@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -35,10 +35,6 @@ import javax.swing.JButton;
 import java.awt.Color;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GestUsuarios.
- */
 
 /**
  * The Class GestUsuarios.
@@ -189,15 +185,15 @@ public class GestUsuarios extends JPanel {
 	}
 	
 	
-	//Definimos método para mostrar los datos almacenados en la BBDD
 	/**
+	 * Mostramos en la tabla los datos de laos usuarios almacenados en BBDD
+	 * 
 	 * Populate user data.
 	 */
 	//respecto de la tabla usuarios
 	private void populateUserData() {
 		try {
 			//Conexión a la BBDD
-			//conn = DriverManager.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			//Consulta a BBDD
@@ -224,12 +220,13 @@ public class GestUsuarios extends JPanel {
 	
 	
 	/**
+	 * Conseguimos el id y el tipo de usuario desde la vista MenuPrincipal
+	 * 
 	 * Sets the valor tipo usuario.
 	 *
 	 * @param id     the id
 	 * @param nombre the nombre
 	 */
-	//Recogemos el valor de Tipo de Usuario desde la clase de MenuPrincipal
 	public void setValorTipoUsuario (String id,String nombre){
 		 txIdUsuario.setText(id);
 		 txTipoUsuario.setText(nombre);
@@ -239,7 +236,6 @@ public class GestUsuarios extends JPanel {
 	/**
 	 * The Class InnerActionGestUsuarios.
 	 */
-	//Definimos los actionListener de los componentes desde la inner class
 	public class InnerActionGestUsuarios implements ActionListener{
 
 		/**
@@ -269,6 +265,8 @@ public class GestUsuarios extends JPanel {
 					
 					//Pasamos los valores seleccionados al JDialog ModUsuarios
 					ModUsuarios.getRowUsuarios(id, tipo, pass);
+					
+					System.out.println("Usuario: "+u.getIdUsuario()+" "+u.getTipoUsuario()+" "+u.getPassUsuario());
 				}
 			}
 			
@@ -299,11 +297,12 @@ public class GestUsuarios extends JPanel {
 	}
 	
 	/**
+	 * Añadimos nueva fila cuando se añade una nueva presentación desde AltaUsuarios
+	 * 
 	 * Adds the row usuarios.
 	 *
 	 * @param dataRow the data row
 	 */
-	//Método para añadir una nueva fila en JTable, llamado desde la clase AltaUsuarios
 	public static void addRowUsuarios (Object[] dataRow) {
 		DefaultTableModel model = (DefaultTableModel) jTableUsuarios.getModel();
 		model.addRow(dataRow); //Añadimos fila en la tabla de un nuevo usuario creado en AltaUsuarios
@@ -311,13 +310,14 @@ public class GestUsuarios extends JPanel {
 	} 
 	
 	/**
+	 * Recoge los elementos seleccionados de la tabla para mostrarlos en la pantalla de ModUsuarios
+	 * 
 	 * Sets the row usuarios.
 	 *
 	 * @param id   the id
 	 * @param tipo the tipo
 	 * @param pass the pass
 	 */
-	//Método para actualizar fila de JTable desde la clase ModUsuarios
 	public static void setRowUsuarios(String id,String tipo,String pass) {
 		DefaultTableModel model = (DefaultTableModel) jTableUsuarios.getModel();
 		int i = jTableUsuarios.getSelectedRow();
@@ -328,11 +328,12 @@ public class GestUsuarios extends JPanel {
 	
 	
 	/**
+	 * Controla componentes en función del usuario conectado
+	 * 
 	 * Control gest usuarios.
 	 *
 	 * @param tipoUsuario the tipo usuario
 	 */
-	//Método para controlar las acciones que pueden llevar a cabo los diferentes usuarios en GestUsuarios
 	public void controlGestUsuarios(String tipoUsuario) {
 		tipoUsuario = txTipoUsuario.getText();
 		//Cuando el tipo de usuario es distinto a Administrador deshabilitamos los siguientes componentes

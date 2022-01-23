@@ -1,14 +1,11 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
-// TODO: Auto-generated Javadoc
 
-/**
- * The Interface ControlaFechas.
- */
+
 
 /**
  * The Interface ControlaFechas.

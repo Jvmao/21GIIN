@@ -1,15 +1,10 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package controlador;
 
 import java.util.ArrayList;
-
-// TODO: Auto-generated Javadoc
-/**
- * The Interface MunicipioDAO.
- */
 
 
 /**
@@ -21,18 +16,16 @@ public interface MunicipioDAO {
 	/**
 	 * Lista tipo usuarios mun.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaTipoUsuariosMun(ArrayList<String> c); 
+	public ArrayList<String> listaTipoUsuariosMun(); 
 	
 	/**
 	 * Lista id usuarios municipios.
 	 *
-	 * @param c the c
 	 * @return the array list
 	 */
-	public ArrayList<?> listaIdUsuariosMunicipios(ArrayList<String> c);
+	public ArrayList<String> listaIdUsuariosMunicipios();
 	
 	/**
 	 * Adds the municipio.

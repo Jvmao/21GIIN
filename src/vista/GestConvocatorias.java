@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 
@@ -37,10 +37,7 @@ import util.ConstantsGestConvocatorias;
 import util.ConstantsMessage;
 import javax.swing.border.LineBorder;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GestConvocatorias.
- */
+
 
 /**
  * The Class GestConvocatorias.
@@ -193,7 +190,6 @@ public class GestConvocatorias extends JPanel {
 	/**
 	 * The Class InnerActionConvocatorias.
 	 */
-	//Definimos los actionListener de los componentes desde la inner class
 	public class InnerActionConvocatorias implements ActionListener{
 
 		/**
@@ -216,7 +212,7 @@ public class GestConvocatorias extends JPanel {
 				//Comprobamos si se ha seleccionado alguna fila cuando se elimina un usuario.
 				if(jTableConvocatorias.getSelectionModel().isSelectionEmpty()==true ) {
 					//Si no selecciona una fila de la tabla y presiona el botón btnMod se muestra el siguiente mensaje
-					JOptionPane.showMessageDialog(null,ConstantsMessage.msg14,ConstantsMessage.msg0,JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,ConstantsMessage.msg16,ConstantsMessage.msg0,JOptionPane.ERROR_MESSAGE);
 				}else {
 					mc.setVisible(true);
 					//Recogemos los valores de la fila seleccionada
@@ -261,29 +257,30 @@ public class GestConvocatorias extends JPanel {
 	}
 	
 	/**
+	 * Conseguimos el id y el tipo de usuario desde la vista MenuPrincipal
+	 * 
 	 * Sets the valor tipo usuario.
 	 *
 	 * @param id     the id
 	 * @param nombre the nombre
 	 */
-	//Recogemos el valor de Tipo de Usuario desde la clase de MenuPrincipal
 	public void setValorTipoUsuario (String id,String nombre){
 			txIdUsuario.setText(id);
 			txTipoUsuario.setText(nombre);		 
 	}
 	
 	
-	//Definimos método para mostrar los datos almacenados en la BBDD
+
 	/**
+	 * Mostramos en la tabla los datos de las convocatorias almacenadas en BBDD
+	 * 
 	 * Populate convocatoria data.
 	 *
 	 * @throws ParseException the parse exception
 	 */
-	//respecto de la tabla usuarios
 	private void populateConvocatoriaData() throws ParseException {
 		try {
 			//Conexión a la BBDD
-			//conn = DriverManager.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			conn = ConDB.getConnection(ConstantsDB.server,ConstantsDB.user,ConstantsDB.pass);
 			
 			//Consulta a BBDD
@@ -330,11 +327,12 @@ public class GestConvocatorias extends JPanel {
 	
 	
 	/**
+	 * Añadimos fila en la tabla de un nuevo Municipio creado en AltaMunicipios
+	 * 
 	 * Adds the row convocatorias.
 	 *
 	 * @param dataRow the data row
 	 */
-	//Añadimos una nueva fila en la tabla de convocatorias cuando la damos de alta desde la pantalla AltaConvocatorias.
 	public static void addRowConvocatorias (Object[] dataRow) {
 		DefaultTableModel model = (DefaultTableModel) jTableConvocatorias.getModel();
 		model.addRow(dataRow); //Añadimos fila en la tabla de un nuevo Municipio creado en AltaMunicipios
@@ -342,13 +340,14 @@ public class GestConvocatorias extends JPanel {
 	}
 	
 	/**
+	 * Cambiamos formato fecha en BBDD yyyy-MM-dd HH:mm a dd/MM/yyyy HH:mm para mostrar por pantalla
+	 * 
 	 * Parses the fecha.
 	 *
 	 * @param fecha the fecha
 	 * @return the string
 	 * @throws ParseException the parse exception
 	 */
-	//Actualizamos formato de fecha para que evitar problemas de conversión en la BBDD
 	public String parseFecha(String fecha) throws ParseException{
         SimpleDateFormat actualFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = actualFormat.parse(fecha);
@@ -360,6 +359,8 @@ public class GestConvocatorias extends JPanel {
 	}
 	
 	/**
+	 * Recoge los elementos seleccionados de la tabla para mostrarlos en la pantalla de ModConvocatorias
+	 * 
 	 * Sets the row convocatorias.
 	 *
 	 * @param idConv the id conv
@@ -370,8 +371,8 @@ public class GestConvocatorias extends JPanel {
 	 * @param estado the estado
 	 * @param docs   the docs
 	 */
-	//Recogemos los valores desde ModConvocatorias y lo actualizamos en la tabla jTableConvocatorias de esta clase
-	public static void setRowConvocatorias(String idConv,String idUser,String desc,String inicio,String fin,int estado,ArrayList<String> docs) {
+	public static void setRowConvocatorias(String idConv,String idUser,String desc,String inicio,
+			String fin,int estado,ArrayList<String> docs) {
 		DefaultTableModel model = (DefaultTableModel) jTableConvocatorias.getModel();
 		int i = jTableConvocatorias.getSelectedRow();
 		model.setValueAt(idConv,i,0);   //Actualizamos valor idConv
@@ -385,11 +386,12 @@ public class GestConvocatorias extends JPanel {
 	}
 	
 	/**
+	 * Controla componentes en función del usuario conectado
+	 * 
 	 * Control gest convocatorias.
 	 *
 	 * @param tipoUsuario the tipo usuario
 	 */
-	//Método para controlar las acciones que pueden llevar a cabo los diferentes usuarios en GestConvocatorias
 	public void controlGestConvocatorias(String tipoUsuario) {
 		tipoUsuario = txTipoUsuario.getText().toString();
 		

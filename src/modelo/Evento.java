@@ -1,23 +1,23 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package modelo;
 
 import java.util.Date;
 
-// TODO: Auto-generated Javadoc
 /**
+ * Objeto Evento
+ * 
  * The Class Evento.
  */
 public class Evento {
 	
-	/** The id convocatorias. */
-	//Atributos
-	private String idConvocatorias;
+	/** The id evento. */
+	private String idEvento;
 	
-	/** The desc presentacion. */
-	private String descPresentacion;
+	/** The desc evento. */
+	private String descEvento;
 	
 	/** The fecha apertura. */
 	private Date fechaApertura;
@@ -28,61 +28,58 @@ public class Evento {
 	/**
 	 * Instantiates a new evento.
 	 */
-	//Constructor Vacío
 	public Evento() {}
 
 	/**
 	 * Instantiates a new evento.
 	 *
-	 * @param idConvocatorias  the id convocatorias
-	 * @param descPresentacion the desc presentacion
-	 * @param fechaApertura    the fecha apertura
-	 * @param fechaCierre      the fecha cierre
+	 * @param idEvento      the id evento
+	 * @param descEvento    the desc evento
+	 * @param fechaApertura the fecha apertura
+	 * @param fechaCierre   the fecha cierre
 	 */
-	//Constructor
-	public Evento(String idConvocatorias, String descPresentacion, Date fechaApertura, Date fechaCierre) {
+	public Evento(String idEvento, String descEvento, Date fechaApertura, Date fechaCierre) {
 		super();
-		this.idConvocatorias = idConvocatorias;
-		this.descPresentacion = descPresentacion;
+		this.idEvento = idEvento;
+		this.descEvento = descEvento;
 		this.fechaApertura = fechaApertura;
 		this.fechaCierre = fechaCierre;
 	}
 
 	/**
-	 * Gets the id convocatorias.
+	 * Gets the id evento.
 	 *
-	 * @return the id convocatorias
+	 * @return the id evento
 	 */
-	//Getters and Setters
-	public String getIdConvocatorias() {
-		return idConvocatorias;
+	public String getIdEvento() {
+		return idEvento;
 	}
 
 	/**
-	 * Sets the id convocatorias.
+	 * Sets the id evento.
 	 *
-	 * @param idConvocatorias the new id convocatorias
+	 * @param idEvento the new id evento
 	 */
-	public void setIdConvocatorias(String idConvocatorias) {
-		this.idConvocatorias = idConvocatorias;
+	public void setIdEvento(String idEvento) {
+		this.idEvento = idEvento;
 	}
 
 	/**
-	 * Gets the desc presentacion.
+	 * Gets the desc evento.
 	 *
-	 * @return the desc presentacion
+	 * @return the desc evento
 	 */
-	public String getDescPresentacion() {
-		return descPresentacion;
+	public String getDescEvento() {
+		return descEvento;
 	}
 
 	/**
-	 * Sets the desc presentacion.
+	 * Sets the desc evento.
 	 *
-	 * @param descPresentacion the new desc presentacion
+	 * @param descEvento the new desc evento
 	 */
-	public void setDescPresentacion(String descPresentacion) {
-		this.descPresentacion = descPresentacion;
+	public void setDescEvento(String descEvento) {
+		this.descEvento = descEvento;
 	}
 
 	/**
@@ -126,13 +123,13 @@ public class Evento {
 	 *
 	 * @return the string
 	 */
-	//Método toString
 	@Override
 	public String toString() {
-		return "Evento [idConvocatorias=" + idConvocatorias + ", descPresentacion=" + descPresentacion
-				+ ", fechaApertura=" + fechaApertura + ", fechaCierre=" + fechaCierre + "]";
-	};
-	
+		return "Evento [idEvento=" + idEvento + ", descEvento=" + descEvento + ", fechaApertura=" + fechaApertura
+				+ ", fechaCierre=" + fechaCierre + "]";
+	}
+
+
 	
 	
 	

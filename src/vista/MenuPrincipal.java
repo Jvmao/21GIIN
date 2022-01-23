@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -24,11 +24,6 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-// TODO: Auto-generated Javadoc
-
-/**
- * The Class MenuPrincipal.
- */
 
 /**
  * The Class MenuPrincipal.
@@ -178,7 +173,6 @@ public class MenuPrincipal extends JFrame {
 	/**
 	 * The Class InnerActionMenuPrincipal.
 	 */
-	//Definimos los actionListener de los componentes desde la inner class
 	public class InnerActionMenuPrincipal implements ActionListener{
 
 		/**
@@ -196,7 +190,7 @@ public class MenuPrincipal extends JFrame {
 				setLocationRelativeTo(null);
 				
 				PassTipo = Login.TipoUsuario; //Recogemos el valor del tipo de usuario conectado desde Login
-				PassID = Login.idUsuario;
+				PassID = Login.idUser;	  //Recogemos el valor del id de usuario conectado desde Login
 				System.out.println("Usuario en MenuPrincipal: "+PassTipo); //Imprimimos usuario conectado
 				gt.setValorTipoUsuario(PassID,PassTipo); //Pasamos el valor del tipo de usuario a GestUsuario
 				
@@ -214,7 +208,7 @@ public class MenuPrincipal extends JFrame {
 				setLocationRelativeTo(null);
 				
 				PassTipo = Login.TipoUsuario; //Recogemos el valor del tipo de usuario conectado desde Login
-				PassID = Login.idUsuario; 	  //Recogemos el valor del id de usuario conectado desde Login
+				PassID = Login.idUser; 	  //Recogemos el valor del id de usuario conectado desde Login
 				System.out.println("Usuario en Municipios: "+PassTipo); //Imprimimos usuario conectado
 				gm.setValorTipoUsuario(PassID,PassTipo); //Pasamos el valor del tipo de usuario a GestMunicipios
 				gm.controlGestMunicipios(PassTipo);
@@ -229,7 +223,7 @@ public class MenuPrincipal extends JFrame {
 				setLocationRelativeTo(null);
 				
 				PassTipo = Login.TipoUsuario; //Recogemos el valor del tipo de usuario conectado desde Login
-				PassID = Login.idUsuario;
+				PassID = Login.idUser; 	  //Recogemos el valor del id de usuario conectado desde Login
 				System.out.println("Usuario en Convocatorias: "+PassTipo); //Imprimimos usuario conectado
 				gc.setValorTipoUsuario(PassID,PassTipo);
 				gc.controlGestConvocatorias(PassTipo);
@@ -243,7 +237,7 @@ public class MenuPrincipal extends JFrame {
 				setLocationRelativeTo(null);
 				
 				PassTipo = Login.TipoUsuario; //Recogemos el valor del tipo de usuario conectado desde Login
-				PassID = Login.idUsuario; 	  //Recogemos el valor del id de usuario conectado desde Login
+				PassID = Login.idUser; 	  //Recogemos el valor del id de usuario conectado desde Login
 				System.out.println("Usuario en Presentaciones: "+PassID+" "+PassTipo); //Imprimimos usuario conectado
 				gp.setValoresUsuario(PassID,PassTipo);
 				gp.controlGestPresentaciones(PassTipo);
@@ -257,7 +251,7 @@ public class MenuPrincipal extends JFrame {
 				setLocationRelativeTo(null);
 				
 				PassTipo = Login.TipoUsuario; //Recogemos el valor del tipo de usuario conectado desde Login
-				PassID = Login.idUsuario;     //Recogemos el valor del id de usuario conectado desde Login
+				PassID = Login.idUser;     //Recogemos el valor del id de usuario conectado desde Login
 				System.out.println("Usuario en Información: "+PassID+" "+PassTipo); //Imprimimos usuario conectado
 				gi.setValoresUsuario(PassID,PassTipo);
 			}
@@ -279,7 +273,6 @@ public class MenuPrincipal extends JFrame {
 	            
 				if(result==JOptionPane.YES_OPTION){
 					try {
-						//mp.setVisible(false);
 						dispose(); //Cerramos la aplicación
 						System.out.println("Aplicación Cerrada");
 					}catch(Exception ex) {

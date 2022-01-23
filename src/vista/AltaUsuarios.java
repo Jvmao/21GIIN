@@ -1,5 +1,5 @@
 /*
- * 18 ene 2022
+ * 23 ene 2022
  * Jose V. Martí
  */
 package vista;
@@ -20,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import controlador.UsuariosImplDAO;
 import util.ConstantsGestUsuarios;
@@ -28,10 +27,6 @@ import util.ConstantsMessage;
 
 import java.awt.Font;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AltaUsuarios.
- */
 
 /**
  * The Class AltaUsuarios.
@@ -69,10 +64,6 @@ public class AltaUsuarios extends JDialog {
 	/** The image error. */
 	//Icono mensaje incorrecto
 	ImageIcon imageError = new ImageIcon(AltaUsuarios.class.getResource(ConstantsMessage.imgError));
-	
-	/** The tipo usuarios. */
-	//Variable listar datos tipo usuario desde arraylist
-	private ArrayList<String> tipoUsuarios = new ArrayList<String>();
 
 
 
@@ -115,8 +106,9 @@ public class AltaUsuarios extends JDialog {
 		cbTipoUsuario = new JComboBox<String>();
 		cbTipoUsuario.setBounds(135, 104, 204, 27);
 		contentPanel.add(cbTipoUsuario);
-		ArrayList<?> m = udao.listaTipoUsuarios(tipoUsuarios); //pasamos el tipo de usuario desde la BBDD
-		cbTipoUsuario.setModel(new DefaultComboBoxModel<String>(m.toArray(new String[0]))); //listamos valores en cbTipoUsuario
+		//List<?> m = udao.listaTipoUsuarios(tipoUsuarios); //pasamos el tipo de usuario desde la BBDD
+		//pasamos el tipo de usuario desde la BBDD y los mostramos en cbTipoUsuario
+		cbTipoUsuario.setModel(new DefaultComboBoxModel<String>(udao.listaTipoUsuarios().toArray(new String[0]))); //listamos valores en cbTipoUsuario
 	
 		
 		//Label password
@@ -207,6 +199,8 @@ public class AltaUsuarios extends JDialog {
 	}
 	
 	/**
+	 * Reiniciamos componentes
+	 * 
 	 * Restart.
 	 */
 	public void restart() {
